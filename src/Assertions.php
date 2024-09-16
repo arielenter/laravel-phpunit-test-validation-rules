@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace arielenter\ValidationAssertions;
+namespace arielenter\Validation;
 
 use Illuminate\Contracts\Validation\Rule;
 use Orchestra\Testbench\TestCase;
@@ -21,8 +21,8 @@ use function route;
  * (GPL) version 3
  * @link https://github.com/arielenter/laravel-phpunit-test-validation-rules
  */
-trait ValidationAssertions {
-    use HelperMethods;
+trait Assertions {
+    use AssertionsHelper;
 
     public function assertValidationRuleIsImplementedInUrl(
             string $url,

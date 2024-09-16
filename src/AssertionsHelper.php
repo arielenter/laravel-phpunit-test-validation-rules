@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace arielenter\ValidationAssertions;
+namespace arielenter\Validation;
 
 use ArgumentCountError;
 use BadMethodCallException;
@@ -13,7 +13,7 @@ use ValueError;
 use function __;
 use function validator;
 
-trait HelperMethods {
+trait AssertionsHelper {
 
     private mixed $currentRow;
     private mixed $currentRowOriginalValue;

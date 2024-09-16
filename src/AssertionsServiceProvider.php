@@ -1,10 +1,10 @@
 <?php
 
-namespace arielenter\ValidationAssertions;
+namespace arielenter\Validation;
 
 use Illuminate\Support\ServiceProvider;
 
-class BaseServiceProvider extends ServiceProvider {
+class AssertionsServiceProvider extends ServiceProvider {
 
     public function boot() {
         $this->registerResources();

@@ -12,7 +12,7 @@ use TypeError;
 use function __;
 use function validator;
 
-class TestHelpers extends TestCase {
+class ValidationAssertionsTestHelpers extends TestCase {
 
     public string $regexRuleExample = 'regex:'
             . '/^[a-zA-Z]([a-zA-Z0-9]|[a-zA-Z0-9]\.[a-zA-Z0-9])*$/';

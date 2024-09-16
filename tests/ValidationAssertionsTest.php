@@ -2,7 +2,7 @@
 
 namespace arielenter\ValidationAssertions\Tests;
 
-use arielenter\ValidationAssertions\ValidationAssertions;
+use arielenter\Validation\Assertions;
 use Exception;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Session;
@@ -10,9 +10,9 @@ use PHPUnit\Framework\Attributes\Test;
 use ValueError;
 use function __;
 
-class ValidationAssertionsTest extends TestHelpers {
+class ValidationAssertionsTest extends ValidationAssertionsTestHelpers {
 
-    use ValidationAssertions;
+    use Assertions;
 
     #[Test]
     public function will_pass_if_validation_is_implemented_in_url(): void {
