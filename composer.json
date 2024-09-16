@@ -1,0 +1,31 @@
+{
+    "name": "arielenter/laravel-phpunit-test-validation-rules",
+    "description": "Assertion methods that help to test that the desired validation rule(s) are implemented in a given URL or route name.",
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "Ariel Del Valle Lozano",
+            "email": "arielmazatlan@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "orchestra/testbench": "^9.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "arielenter\\ValidationAssertions\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "arielenter\\ValidationAssertions\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "arielenter\\ValidationAssertions\\BaseServiceProvider"
+            ]
+        }
+    }
+}
