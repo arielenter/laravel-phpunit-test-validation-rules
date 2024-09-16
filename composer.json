@@ -1,5 +1,10 @@
 {
     "name": "arielenter/laravel-phpunit-test-validation-rules",
+    "version": "1.0.0-alpha.1",
+    "dist": {
+        "url": "https://github.com/arielenter/laravel-phpunit-test-validation-rules/archive/refs/tags/v1.0.0-alpha.1.tar.gz",
+        "type": "tar.gz"
+    },
     "description": "Assertion methods that help to test that the desired validation rule(s) are implemented in a given URL or route name.",
     "license": "GPL-3.0",
     "authors": [
