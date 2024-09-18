@@ -33,7 +33,7 @@ trait Assertions {
             string $errorBag = 'default'
     ): void {
         $validatedRequestMethod = $this->validateRequestMethod($requestMethod);
-        $this->validateValidationRuleValueTypes($validationRule);
+        $this->ifRuleIsArrayValidateCorrectTypeOfItsValues($validationRule);
 
         $invalidDataExample = [$fieldName => $invalidValueExample];
         $fieldValidationRule = [$fieldName => $validationRule];

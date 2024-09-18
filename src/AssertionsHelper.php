@@ -39,7 +39,7 @@ trait AssertionsHelper {
         throw new ValueError(__($thansKey, $replace));
     }
 
-    private function validateValidationRuleValueTypes(
+    private function ifRuleIsArrayValidateCorrectTypeOfItsValues(
             string|Rule|array $validationRule
     ): void {
         if (!is_array($validationRule)) {
