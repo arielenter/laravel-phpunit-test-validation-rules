@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace arielenter\Validation;
 
 use Illuminate\Contracts\Validation\Rule;
-use Orchestra\Testbench\TestCase;
 use Illuminate\Support\Facades\Session;
 use PHPUnit\Framework\AssertionFailedError;
 use function __;
@@ -65,7 +64,7 @@ trait Assertions {
             string $errorBag
     ): void {
         try {
-            TestCase::$requestMethod($url, $invalidDataExample)
+            $this->$requestMethod($url, $invalidDataExample)
                     ->assertSessionHasErrorsIn($errorBag,
                             [$fieldName => $expectedErrorMessage]);
         } catch (AssertionFailedError $e) {
@@ -81,7 +80,7 @@ trait Assertions {
                 'assert_session_has_errors_in_fail' => $e->getMessage()
             ];
 
-            TestCase::fail(__($transKey, $replace));
+            $this->fail(__($transKey, $replace));
         } finally {
             Session::flush();
         }
