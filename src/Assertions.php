@@ -90,7 +90,7 @@ trait Assertions {
             string $routeName,
             string $fieldName,
             mixed $invalidValueExample,
-            string|Rule $validationRule,
+            string|Rule|array $validationRule,
             string $requestMethod = 'post',
             string $errorBag = 'default'
     ): void {
