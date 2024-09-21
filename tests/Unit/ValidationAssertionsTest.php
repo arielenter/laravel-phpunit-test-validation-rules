@@ -1,8 +1,8 @@
 <?php
 
-namespace arielenter\ValidationAssertions\Tests;
+namespace Arielenter\ValidationAssertions\Tests\Unit;
 
-use arielenter\Validation\Assertions;
+use Arielenter\Validation\Assertions;
 use Exception;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Session;
@@ -134,7 +134,7 @@ class ValidationAssertionsTest extends ValidationAssertionsTestHelpers {
                 fn() => $this->assertValidationRuleIsImplementedInUrl($a1,
                         $a2, $a3, $a4),
                 Exception::class,
-                __("{$this->keyPrefix}.not_invalid_data", $replace)
+                __("{$this->transPrefix}.not_invalid_data", $replace)
         );
     }
 
@@ -155,7 +155,7 @@ class ValidationAssertionsTest extends ValidationAssertionsTestHelpers {
                 fn() => $this->assertValidationRuleIsImplementedInUrl($a1,
                         $a2, $a3, $a4, $a5),
                 ValueError::class,
-                __("{$this->keyPrefix}.unsupported_request_method",
+                __("{$this->transPrefix}.unsupported_request_method",
                         $replace)
         );
     }
@@ -175,7 +175,7 @@ class ValidationAssertionsTest extends ValidationAssertionsTestHelpers {
                 fn() => $this->assertValidationRuleIsImplementedInUrl($a1,
                         $a2, $a3, $a4),
                 ValueError::class,
-                __("{$this->keyPrefix}.incorrect_rule_value", $replace)
+                __("{$this->transPrefix}.incorrect_rule_value", $replace)
         );
     }
 

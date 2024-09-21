@@ -2,12 +2,9 @@
 
 declare(strict_types=1);
 
-namespace arielenter\Validation;
+namespace Arielenter\Validation;
 
 use Illuminate\Contracts\Validation\Rule;
-use Illuminate\Support\Facades\Session;
-use PHPUnit\Framework\AssertionFailedError;
-use function __;
 use function route;
 
 /**
@@ -21,6 +18,7 @@ use function route;
  * @link https://github.com/arielenter/laravel-phpunit-test-validation-rules
  */
 trait Assertions {
+
     use AssertionsHelper;
 
     public function assertValidationRuleIsImplementedInUrl(
@@ -51,39 +49,6 @@ trait Assertions {
                 $validatedRequestMethod,
                 $errorBag
         );
-    }
-
-    private function
-    submitInvalidDataExampleToUrlAndAssertItReturnsExpectedErrMsg(
-            string $url,
-            array $invalidDataExample,
-            string $fieldName,
-            array $fieldValidationRule,
-            string $expectedErrorMessage,
-            string $requestMethod,
-            string $errorBag
-    ): void {
-        try {
-            $this->$requestMethod($url, $invalidDataExample)
-                    ->assertSessionHasErrorsIn($errorBag,
-                            [$fieldName => $expectedErrorMessage]);
-        } catch (AssertionFailedError $e) {
-            $transKey = "{$this->transKeyPrefix}.validation_assertion_failed";
-
-            $replace = [
-                'url' => $url,
-                'method' => $requestMethod,
-                'error_bag' => $errorBag,
-                'data' => json_encode($invalidDataExample),
-                'rule' => json_encode($fieldValidationRule),
-                'expected_validation_error' => $expectedErrorMessage,
-                'assert_session_has_errors_in_fail' => $e->getMessage()
-            ];
-
-            $this->fail(__($transKey, $replace));
-        } finally {
-            Session::flush();
-        }
     }
 
     public function assertValidationRuleIsImplementedInRouteName(

@@ -1,8 +1,8 @@
 {
     "name": "arielenter/laravel-phpunit-test-validation-rules",
-    "version": "1.0.0-alpha.8",
+    "version": "1.0.0-beta",
     "dist": {
-        "url": "https://github.com/arielenter/laravel-phpunit-test-validation-rules/archive/refs/tags/v1.0.0-alpha.8.tar.gz",
+        "url": "https://github.com/arielenter/laravel-phpunit-test-validation-rules/archive/refs/tags/v1.0.0-beta.tar.gz",
         "type": "tar"
     },
     "description": "Assertion methods that help to test that the desired validation rule(s) are implemented in a given URL or route name.",
@@ -18,18 +18,18 @@
     },
     "autoload": {
         "psr-4": {
-            "arielenter\\Validation\\": "src/"
+            "Arielenter\\Validation\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "arielenter\\ValidationAssertions\\Tests\\": "tests/"
+            "Arielenter\\ValidationAssertions\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "arielenter\\Validation\\AssertionsServiceProvider"
+                "Arielenter\\Validation\\AssertionsServiceProvider"
             ]
         }
     }
