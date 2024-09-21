@@ -1,8 +1,9 @@
 <?php
 
-namespace arielenter\ValidationAssertions\Tests;
+namespace Arielenter\ValidationAssertions\Tests\Unit;
 
 use ArgumentCountError;
+use Arielenter\ValidationAssertions\Tests\TestCase;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -19,7 +20,8 @@ class ValidationAssertionsTestHelpers extends TestCase {
     public string $exampleUrl = '/example-url';
     public string $exampleRouteName = 'example_route_name';
     public string $exampleErrorBagName = 'example_error_bag';
-    public string $keyPrefix = 'ValidationAssertions::errors';
+    public string $transPrefix = 'validation_assertions::errors';
+    public string $testTransPrefix = 'validation_assertions_test::errors';
     public Rule $passowrdRuleInstance;
 
     protected function setUp(): void {
@@ -57,12 +59,11 @@ class ValidationAssertionsTestHelpers extends TestCase {
             string|Rule $validationRule,
             string $assertSessionHasErrorsInFail = null
     ): void {
-
         $transReplace = $this->getTransReplace($url, $field,
                 $invalidValueExample, $validationRule,
                 $assertSessionHasErrorsInFail);
 
-        $expectedError = __("{$this->keyPrefix}.validation_assertion_"
+        $expectedError = __("{$this->transPrefix}.validation_assertion_"
                 . "failed", $transReplace);
 
         try {
@@ -73,12 +74,11 @@ class ValidationAssertionsTestHelpers extends TestCase {
                     AssertionFailedError::class, $expectedError
             );
         } catch (AssertionFailedError $e) {
-            $notImplementedExample = [$url, $field, $invalidValueExample,
+            $notImplementedRuleExample = [$url, $field, $invalidValueExample,
                 $validationRule,];
-            $this->fail('Not implemented rule example '
-                    . json_encode($notImplementedExample) . ' did not throw '
-                    . 'the expected error. Here is the fail message of '
-                    . 'assertThrows: ' . $e->getMessage());
+
+            $this->throwNotExpectedErrorReceived($notImplementedRuleExample,
+                    $e->getMessage());
         }
     }
 
@@ -109,13 +109,28 @@ class ValidationAssertionsTestHelpers extends TestCase {
         ];
     }
 
+    public function throwNotExpectedErrorReceived(
+            array $notImplementedRuleExample,
+            string $assertThrowsError
+    ) {
+        $transPrefix = $this->testTransPrefix;
+        $transKey = "{$transPrefix}.not_expected_error_received";
+        $replace = [
+            'example_type' => __("{$transPrefix}.not_implemented_rule"),
+            'example' => json_encode($notImplementedRuleExample),
+            'assertion_error' => $assertThrowsError
+        ];
+
+        $this->fail(__($transKey, $replace));
+    }
+
     public function checkIncorrectRuleValueTypeThrowExpectedError(): void {
         [$a1, $a2, $a3, $a5] = [$this->exampleUrl, 'user_id_field', '101',
             'delete'];
         $composedRule = ['numeric', 'max:100', ['nor string or object']];
         $invalidComposedRuleValue = $composedRule[2];
 
-        $transKey = "{$this->keyPrefix}.incorrect_rule_value_type";
+        $transKey = "{$this->transPrefix}.incorrect_rule_value_type";
         $replace = [
             'rule' => json_encode($composedRule),
             'value' => json_encode($invalidComposedRuleValue),
@@ -137,7 +152,7 @@ class ValidationAssertionsTestHelpers extends TestCase {
         $composedRule = ['numeric', 'max:100', (Object) ['incorrect instance']];
         $invalidComposedRuleValue = $composedRule[2];
 
-        $transKey = "{$this->keyPrefix}.incorrect_object_rule";
+        $transKey = "{$this->transPrefix}.incorrect_object_rule";
         $replace = [
             'rule' => get_class($invalidComposedRuleValue),
             'classes' => 'Illuminate\Contracts\Validation\Rule',
@@ -161,7 +176,7 @@ class ValidationAssertionsTestHelpers extends TestCase {
                 fn() => $this->assertValidationRulesAreImplementedInUrl(
                         $this->exampleUrl, $validationList),
                 AssertionFailedError::class,
-                __("{$this->keyPrefix}.validation_assertion_failed",
+                __("{$this->transPrefix}.validation_assertion_failed",
                         $this->getTransReplace($this->exampleUrl, $a2, $a3,
                                 $a4))
         );
@@ -193,17 +208,21 @@ class ValidationAssertionsTestHelpers extends TestCase {
                     $expectedError
             );
         } catch (AssertionFailedError $e) {
-            $this->fail('The invalid array shape list example '
-                    . json_encode($list) . " did not throw the expected error. "
-                    . "Here is the fail message of assertThrows: "
-                    . $e->getMessage());
+            $transPrefix = $this->testTransPrefix;
+            $transKey = "{$transPrefix}.not_expected_error_received";
+            $replace = [
+                'example_type' => __("{$transPrefix}.invalid_array_shape_list"),
+                'example' => json_encode($list),
+                'assertion_error' => $e->getMessage()
+            ];
+            $this->fail($transKey, $replace);
         }
     }
 
     public function invalidRowShapeExample1(): array {
         $listExample = ['username_field', 'should had been nested', 'required'];
 
-        $transKey = "{$this->keyPrefix}.row_should_had_been_a_nested_"
+        $transKey = "{$this->transPrefix}.row_should_had_been_a_nested_"
                 . "array";
 
         $replace = [
@@ -232,7 +251,7 @@ class ValidationAssertionsTestHelpers extends TestCase {
     missingIntKeyRowExample(array $exampleRow, int $missingIntKey): array {
         $listExample = [$exampleRow];
 
-        $transKey = "{$this->keyPrefix}.row_has_a_missing_key";
+        $transKey = "{$this->transPrefix}.row_has_a_missing_key";
 
         $replace = $replace = [
             'row_key' => 0,
@@ -283,7 +302,7 @@ class ValidationAssertionsTestHelpers extends TestCase {
         $row = $listExample[0];
         $fieldName = $listExample[0][0];
 
-        $transKey = "{$this->keyPrefix}.wrong_field_name_value_type";
+        $transKey = "{$this->transPrefix}.wrong_field_name_value_type";
 
         $replace = [
             'row_key' => 0,

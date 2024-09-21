@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
-namespace arielenter\Validation;
+namespace Arielenter\Validation;
 
 use ArgumentCountError;
 use BadMethodCallException;
 use Exception;
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Support\Facades\Session;
+use PHPUnit\Framework\AssertionFailedError;
 use TypeError;
 use ValueError;
 use function __;
@@ -18,7 +20,7 @@ trait AssertionsHelper {
     private mixed $currentRow;
     private mixed $currentRowOriginalValue;
     private string|int $currentRowKey;
-    private string $transKeyPrefix = 'ValidationAssertions::errors';
+    private string $transKeyPrefix = 'validation_assertions::errors';
 
     private function validateRequestMethod(string $requestMethod): string {
         $requestMethodLowerCase = strtolower($requestMethod);
@@ -127,6 +129,39 @@ trait AssertionsHelper {
                             'data' => json_encode($invalidDataExample),
                             'rule' => json_encode($fieldValidationRule)
         ]));
+    }
+
+    private function
+    submitInvalidDataExampleToUrlAndAssertItReturnsExpectedErrMsg(
+            string $url,
+            array $invalidDataExample,
+            string $fieldName,
+            array $fieldValidationRule,
+            string $expectedErrorMessage,
+            string $requestMethod,
+            string $errorBag
+    ): void {
+        try {
+            $this->$requestMethod($url, $invalidDataExample)
+                    ->assertSessionHasErrorsIn($errorBag,
+                            [$fieldName => $expectedErrorMessage]);
+        } catch (AssertionFailedError $e) {
+            $transKey = "{$this->transKeyPrefix}.validation_assertion_failed";
+
+            $replace = [
+                'url' => $url,
+                'method' => $requestMethod,
+                'error_bag' => $errorBag,
+                'data' => json_encode($invalidDataExample),
+                'rule' => json_encode($fieldValidationRule),
+                'expected_validation_error' => $expectedErrorMessage,
+                'assert_session_has_errors_in_fail' => $e->getMessage()
+            ];
+
+            $this->fail(__($transKey, $replace));
+        } finally {
+            Session::flush();
+        }
     }
 
     private function validateRowArrayShape(): void {
