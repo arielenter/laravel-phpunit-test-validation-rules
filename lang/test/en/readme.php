@@ -5,9 +5,11 @@ return [
     
     'description' => 'Description',
     
-    'description_paragraph' => 'TestCase trait that provides assertions to '
-    . 'test that given validation rules are implemented in a given URL or '
-    . 'route name for a given request method.',
+    'description_paragraph' => "Trait to be used within TestCase's tests. It "
+    . 'provides assertions to check if a given validation rule is implemented '
+    . 'in a given URL or route name for a given request method. One of its '
+    . "more attractive functionality is that it's possible to test multiple "
+    . 'validation rules on one assertion instruccion.',
     
     'how_it_works' => 'How it works',
     
