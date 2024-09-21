@@ -23,13 +23,13 @@ class ReadmeTest extends TestCase {
     public function writeReadmeFile() {
         $base_path = __DIR__ . '/../../';
         $this->storage = Storage::createLocalDriver(['root' => $base_path]);
-        $this->storage->put('readme.md', $this->getReadmeContent());
+        $this->storage->put('README.md', $this->getReadmeContent());
     }
 
     public function test_readme_file() {
         $this->writeReadmeFile();
 
-        $fileContent = $this->storage->get('readme.md');
+        $fileContent = $this->storage->get('README.md');
 
         $this->assertSame($this->getReadmeContent(), $fileContent);
     }
