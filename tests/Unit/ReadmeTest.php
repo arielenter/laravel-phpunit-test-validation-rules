@@ -9,7 +9,7 @@ use function __;
 
 class ReadmeTest extends TestCase {
 
-    public string $testTransPrefix = 'validation_assertions_test::';
+    public string $testTransPrefix = 'arielenter_validation_assertions_test::';
     private LocalFilesystemAdapter $storage;
 
     public function getReadmeContent() {

@@ -20,7 +20,7 @@ trait AssertionsHelper {
     private mixed $currentRow;
     private mixed $currentRowOriginalValue;
     private string|int $currentRowKey;
-    private string $transKeyPrefix = 'validation_assertions::errors';
+    private string $transKeyPrefix = 'arielenter_validation_assertions::errors';
 
     private function validateRequestMethod(string $requestMethod): string {
         $requestMethodLowerCase = strtolower($requestMethod);

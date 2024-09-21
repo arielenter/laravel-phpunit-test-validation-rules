@@ -20,8 +20,9 @@ class ValidationAssertionsTestHelpers extends TestCase {
     public string $exampleUrl = '/example-url';
     public string $exampleRouteName = 'example_route_name';
     public string $exampleErrorBagName = 'example_error_bag';
-    public string $transPrefix = 'validation_assertions::errors';
-    public string $testTransPrefix = 'validation_assertions_test::errors';
+    public string $transPrefix = 'arielenter_validation_assertions::errors';
+    public string $testTransPrefix = 'arielenter_validation_assertions_test::'
+            . 'errors';
     public Rule $passowrdRuleInstance;
 
     protected function setUp(): void {

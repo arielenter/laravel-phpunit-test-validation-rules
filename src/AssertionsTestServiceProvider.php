@@ -15,6 +15,6 @@ class AssertionsTestServiceProvider Extends AssertionsServiceProvider {
 
         $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
         $this->loadTranslationsFrom(__DIR__ . '/../lang/test',
-                'validation_assertions_test');
+                'arielenter_validation_assertions_test');
     }
 }

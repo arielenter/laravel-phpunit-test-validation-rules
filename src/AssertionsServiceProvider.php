@@ -12,6 +12,6 @@ class AssertionsServiceProvider extends ServiceProvider {
 
     protected function registerResources() {
         $this->loadTranslationsFrom(__DIR__ . '/../lang/production',
-                'validation_assertions');
+                'arielenter_validation_assertions');
     }
 }
