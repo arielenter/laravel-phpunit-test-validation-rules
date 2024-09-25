@@ -80,7 +80,7 @@ class RoutesValidationTest extends TestCase {
     public function test_single_validation_rule_in_route_name() {
         $this->assertValidationRuleIsImplementedInUrl('/patch',
                 'accept_field', '', 'required', 'patch', 'patch_error_bag');
-//         arguments: $routeName, $fieldName, $invalidValueExample, 
+//         arguments: $url, $fieldName, $invalidValueExample, 
 //         $validationRule, $requestMethod = 'post', $errorBag = 'default'
     }
 
@@ -126,7 +126,7 @@ In brief, the following function is used to get the fail validation message:
 validator($data, $rule)->messages()->first();
 ```
 
-Once the fail validation error message is known, it is used to check if said message is returned when submitting the invalid data to the given URL using an already existent TestCase request function like the following and using one of it’s also already existent assertions:
+Once the fail validation error message is known, it is used to check if said message is returned when submitting the invalid data to the given URL using an already existent TestCase request function like the following and using one of it’s also already existenting assertions:
 
 ```php
 $this->post($uri, $data)->assertSessionHasErrorsIn($errorBag, $keys);

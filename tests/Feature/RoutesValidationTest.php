@@ -15,7 +15,7 @@ class RoutesValidationTest extends TestCase {
     public function test_single_validation_rule_in_route_name() {
         $this->assertValidationRuleIsImplementedInUrl('/patch',
                 'accept_field', '', 'required', 'patch', 'patch_error_bag');
-//         :arguments: $routeName, $fieldName, $invalidValueExample, 
+//         :arguments: $url, $fieldName, $invalidValueExample, 
 //         $validationRule, $requestMethod = 'post', $errorBag = 'default'
     }
 

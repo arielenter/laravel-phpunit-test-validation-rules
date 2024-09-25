@@ -42,7 +42,7 @@ return [
     . "error message is known, it is used to check if said message is returned "
     . "when submitting the invalid data to the given URL using an already "
     . "existent TestCase request function like the following and using one of "
-    . "it’s also already existent assertions:",
+    . "it’s also already existenting assertions:",
     
     "this_is_a_quick_example_code" => "The following is a quick example code "
     . "that shows in a nutshell how the assertions were made."

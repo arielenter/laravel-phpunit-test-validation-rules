@@ -4,7 +4,7 @@
 
 ## Description
 
-Esta rasgo esta hecho para ser implementado en pruebas TestCase. Proporciona afirmaciones que permiten probar si la(s) regla(s) de validación proporcionada esta implementada o no en un URL o nombre de ruta dado en un método de petición establecido. Una de las funciones más llamativa es la de probar varias reglas de validación en una sola afirmación.
+Esta rasgo esta hecho para ser implementado en pruebas TestCase. Proporciona afirmaciones que permiten probar si la(s) regla(s) de validación proporcionada(s) esta implementada(s) o no en un URL o nombre de ruta dado en un método de petición establecido. Una de las funciones más llamativa es la de probar varias reglas de validación en una sola afirmación.
 
 ## ¿Cómo es que funciona?
 
@@ -80,7 +80,7 @@ class RoutesValidationTest extends TestCase {
     public function test_single_validation_rule_in_route_name() {
         $this->assertValidationRuleIsImplementedInUrl('/patch',
                 'accept_field', '', 'required', 'patch', 'patch_error_bag');
-//         argumentos: $routeName, $fieldName, $invalidValueExample, 
+//         argumentos: $url, $fieldName, $invalidValueExample, 
 //         $validationRule, $requestMethod = 'post', $errorBag = 'default'
     }
 

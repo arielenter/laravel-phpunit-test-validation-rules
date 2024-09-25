@@ -11,10 +11,10 @@ return [
     
     "description_paragraph" => "Esta rasgo esta hecho para ser implementado en "
     . "pruebas TestCase. Proporciona afirmaciones que permiten probar si la(s) "
-    . "regla(s) de validación proporcionada esta implementada o no en un URL o "
-    . "nombre de ruta dado en un método de petición establecido. Una de las "
-    . "funciones más llamativa es la de probar varias reglas de validación en "
-    . "una sola afirmación.",
+    . "regla(s) de validación proporcionada(s) esta implementada(s) o no en un "
+    . "URL o nombre de ruta dado en un método de petición establecido. Una de "
+    . "las funciones más llamativa es la de probar varias reglas de validación "
+    . "en una sola afirmación.",
     
     "how_it_works" => "¿Cómo es que funciona?",
     
