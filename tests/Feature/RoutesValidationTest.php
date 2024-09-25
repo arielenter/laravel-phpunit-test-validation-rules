@@ -15,7 +15,7 @@ class RoutesValidationTest extends TestCase {
     public function test_single_validation_rule_in_route_name() {
         $this->assertValidationRuleIsImplementedInUrl('/patch',
                 'accept_field', '', 'required', 'patch', 'patch_error_bag');
-//         arguments: $routeName, $fieldName, $invalidValueExample, 
+//         :arguments: $routeName, $fieldName, $invalidValueExample, 
 //         $validationRule, $requestMethod = 'post', $errorBag = 'default'
     }
 
@@ -25,13 +25,13 @@ class RoutesValidationTest extends TestCase {
 
         $this->assertValidationRuleIsImplementedInRouteName('delete_route',
                 'user_id_field', '101', ['numeric', 'max:100'], 'delete');
-//      'numeric|max:100' could also had been used here
+//      'numeric|max:100' :could_also_had_been_used_here
     }
 
     public function test_all_rules_exhaustively_in_url_all_at_once() {
         $file = UploadedFile::fake()->image('avatar.jpg');
         $regex = ['regex:/^[a-zA-Z]([a-zA-Z0-9]|[a-zA-Z0-9]\.[a-zA-Z0-9])*$/'];
-//      regex has to be nested inside an array since it contains a pipe on it
+//      :regex_has_to_be_nested_inside_an_array
         $tooLong = Str::repeat('x', 21);
         $this->assertValidationRulesAreImplementedInUrl(
                 '/post',
@@ -47,6 +47,6 @@ class RoutesValidationTest extends TestCase {
                     ['password_field', 'short', Password::min(6)]
                 ]
         );
-//      assertValidationRulesAreImplementedInRouteName is also available
+//      assertValidationRulesAreImplementedInRouteName :is_also_available
     }
 }

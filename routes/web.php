@@ -24,9 +24,7 @@ Route::post('/post', function (Request $request) {
 });
 
 /**
- * Unique extended requests for each route with defined rule and errorBag 
- * properties could have also been used as well. I just felt this was fine as a 
- * quick simple example.
+ * :extended_request_can_had_been_used
  * 
  */
 

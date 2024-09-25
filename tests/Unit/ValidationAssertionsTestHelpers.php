@@ -3,6 +3,7 @@
 namespace Arielenter\ValidationAssertions\Tests\Unit;
 
 use ArgumentCountError;
+use Arielenter\ValidationAssertions\Tests\Support\TransAssertions;
 use Arielenter\ValidationAssertions\Tests\TestCase;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Http\Request;
@@ -15,6 +16,8 @@ use function validator;
 
 class ValidationAssertionsTestHelpers extends TestCase {
 
+    use TransAssertions;
+
     public string $regexRuleExample = 'regex:'
             . '/^[a-zA-Z]([a-zA-Z0-9]|[a-zA-Z0-9]\.[a-zA-Z0-9])*$/';
     public string $exampleUrl = '/example-url';
@@ -25,7 +28,7 @@ class ValidationAssertionsTestHelpers extends TestCase {
             . 'errors';
     public Rule $passowrdRuleInstance;
 
-    protected function setUp(): void {
+    public function setUp(): void {
         parent::setUp();
 
         $regexRule = $this->regexRuleExample;
@@ -64,8 +67,8 @@ class ValidationAssertionsTestHelpers extends TestCase {
                 $invalidValueExample, $validationRule,
                 $assertSessionHasErrorsInFail);
 
-        $expectedError = __("{$this->transPrefix}.validation_assertion_"
-                . "failed", $transReplace);
+        $expectedError = $this->tryGetTrans("{$this->transPrefix}"
+                . ".validation_assertion_failed", $transReplace);
 
         try {
             $this->assertThrows(
@@ -113,16 +116,21 @@ class ValidationAssertionsTestHelpers extends TestCase {
     public function throwNotExpectedErrorReceived(
             array $notImplementedRuleExample,
             string $assertThrowsError
-    ) {
-        $transPrefix = $this->testTransPrefix;
-        $transKey = "{$transPrefix}.not_expected_error_received";
+    ): void {
+        $errorMsg = $this->getNotExpectedErrorReceivedMsg();
         $replace = [
-            'example_type' => __("{$transPrefix}.not_implemented_rule"),
+            'example_type' => "'not implemented' rule",
             'example' => json_encode($notImplementedRuleExample),
             'assertion_error' => $assertThrowsError
         ];
 
-        $this->fail(__($transKey, $replace));
+        $this->fail(__($errorMsg, $replace));
+    }
+
+    public function getNotExpectedErrorReceivedMsg(): string {
+        return 'The following :example_type example :example did not throw the '
+                . 'expected error. Here is the fail message of assertThrows: '
+                . ':assertion_error';
     }
 
     public function checkIncorrectRuleValueTypeThrowExpectedError(): void {
@@ -143,14 +151,14 @@ class ValidationAssertionsTestHelpers extends TestCase {
                 fn() => $this->assertValidationRuleIsImplementedInUrl($a1, $a2,
                         $a3, $composedRule, $a5),
                 TypeError::class,
-                __($transKey, $replace)
+                $this->tryGetTrans($transKey, $replace)
         );
     }
 
     public function checkIncorrectRuleInstanceThrowExpectedError(): void {
         [$a1, $a2, $a3, $a5] = [$this->exampleUrl, 'user_id_field', '101',
             'delete'];
-        $composedRule = ['numeric', 'max:100', (Object) ['incorrect instance']];
+        $composedRule = ['numeric', 'max:100', (Object) ['not rule instance']];
         $invalidComposedRuleValue = $composedRule[2];
 
         $transKey = "{$this->transPrefix}.incorrect_object_rule";
@@ -163,7 +171,7 @@ class ValidationAssertionsTestHelpers extends TestCase {
                 fn() => $this->assertValidationRuleIsImplementedInUrl($a1, $a2,
                         $a3, $composedRule, $a5),
                 TypeError::class,
-                __($transKey, $replace)
+                $this->tryGetTrans($transKey, $replace)
         );
     }
 
@@ -173,13 +181,16 @@ class ValidationAssertionsTestHelpers extends TestCase {
     ): void {
         [$a2, $a3, $a4] = $validationList[$keyOfRowExpectedToFailAssertion];
 
+        $replace = $this->getTransReplace($this->exampleUrl, $a2, $a3, $a4);
+
+        $expectedErrorMsg = $this->tryGetTrans("{$this->transPrefix}."
+                . "validation_assertion_failed", $replace);
+
         $this->assertThrows(
                 fn() => $this->assertValidationRulesAreImplementedInUrl(
                         $this->exampleUrl, $validationList),
                 AssertionFailedError::class,
-                __("{$this->transPrefix}.validation_assertion_failed",
-                        $this->getTransReplace($this->exampleUrl, $a2, $a3,
-                                $a4))
+                $expectedErrorMsg
         );
     }
 
@@ -209,14 +220,13 @@ class ValidationAssertionsTestHelpers extends TestCase {
                     $expectedError
             );
         } catch (AssertionFailedError $e) {
-            $transPrefix = $this->testTransPrefix;
-            $transKey = "{$transPrefix}.not_expected_error_received";
+            $errorMsg = $this->getNotExpectedErrorReceivedMsg();
             $replace = [
-                'example_type' => __("{$transPrefix}.invalid_array_shape_list"),
+                'example_type' => "'invalid array shape' list",
                 'example' => json_encode($list),
                 'assertion_error' => $e->getMessage()
             ];
-            $this->fail($transKey, $replace);
+            $this->fail(__($errorMsg, $replace));
         }
     }
 
@@ -235,7 +245,7 @@ class ValidationAssertionsTestHelpers extends TestCase {
         return [
             $listExample,
             TypeError::class,
-            __($transKey, $replace)
+            $this->tryGetTrans($transKey, $replace)
         ];
     }
 
@@ -263,7 +273,7 @@ class ValidationAssertionsTestHelpers extends TestCase {
         return [
             $listExample,
             ArgumentCountError::class,
-            __($transKey, $replace)
+            $this->tryGetTrans($transKey, $replace)
         ];
     }
 
@@ -316,7 +326,7 @@ class ValidationAssertionsTestHelpers extends TestCase {
         return [
             $listExample,
             TypeError::class,
-            __($transKey, $replace)
+            $this->tryGetTrans($transKey, $replace)
         ];
     }
 }

@@ -2,17 +2,17 @@
 
 namespace Arielenter\ValidationAssertions\Tests\Unit;
 
-use Arielenter\Validation\Assertions;
+use Arielenter\Validation\Assertions as ValidationAssertions;
+use Arielenter\ValidationAssertions\Tests\Support\TransAssertions;
 use Exception;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Session;
 use PHPUnit\Framework\Attributes\Test;
 use ValueError;
-use function __;
 
 class ValidationAssertionsTest extends ValidationAssertionsTestHelpers {
 
-    use Assertions;
+    use ValidationAssertions, TransAssertions;
 
     #[Test]
     public function will_pass_if_validation_is_implemented_in_url(): void {
@@ -40,19 +40,14 @@ class ValidationAssertionsTest extends ValidationAssertionsTestHelpers {
 
     #[Test]
     public function if_no_error_bag_is_given_default_is_used(): void {
-        [$a1, $a2, $a3, $a4, $a5] = [$this->exampleUrl, 'user_id_field',
-            'not a number', 'numeric', 'delete'];
-
-        $this->assertValidationRuleIsImplementedInUrl($a1, $a2, $a3, $a4,
-                $a5);
+        $this->assertValidationRuleIsImplementedInUrl($this->exampleUrl, 
+                'user_id_field', 'not a number', 'numeric', 'delete');
     }
 
     #[Test]
     public function if_no_request_method_is_specified_post_is_assumed(): void {
-        [$a1, $a2, $a3, $a4] = [$this->exampleUrl, 'username_field', '',
-            'required'];
-
-        $this->assertValidationRuleIsImplementedInUrl($a1, $a2, $a3, $a4);
+        $this->assertValidationRuleIsImplementedInUrl($this->exampleUrl, 
+                'username_field', '', 'required');
     }
 
     #[Test]
@@ -64,40 +59,31 @@ class ValidationAssertionsTest extends ValidationAssertionsTestHelpers {
 
     #[Test]
     public function will_fail_if_validation_is_not_implemented_in_url(): void {
-        [$a1, $a2, $a3, $a4] = [$this->exampleUrl, 'username_field',
-            'confirmed is not implemented for username_field', 'confirmed'];
+        $this->checkValidationAssertionThrowsExpectedError($this->exampleUrl, 
+                'username_field', 'confirmed is not implemented for username', 
+                'confirmed');
 
-        $this->checkValidationAssertionThrowsExpectedError($a1, $a2, $a3, $a4);
-
-        [$b1, $b2, $b3, $b4] = [$this->exampleUrl, 'non_implemented_field', '',
-            'required'];
-
-        $this->checkValidationAssertionThrowsExpectedError($b1, $b2, $b3, $b4);
-
-        [$c1, $c2, $c3, $c4] = ['/non-existent-url', 'username_field', '',
-            'required'];
+        $this->checkValidationAssertionThrowsExpectedError($this->exampleUrl, 
+                'non_implemented_field', '', 'required');
 
         $c5 = "Session is missing expected key [errors].\n"
                 . "Failed asserting that false is true.";
 
-        $this->checkValidationAssertionThrowsExpectedError($c1, $c2, $c3, $c4,
-                $c5);
+        $this->checkValidationAssertionThrowsExpectedError('/non-existent-url', 
+                'username_field', '', 'required', $c5);
     }
 
     #[Test]
     public function instances_of_validation_rule_can_be_used(): void {
-        [$a1, $a2, $a3, $a4] = [$this->exampleUrl, 'password_field', 'short',
-            $this->passowrdRuleInstance];
-
-        $this->assertValidationRuleIsImplementedInUrl($a1, $a2, $a3, $a4);
+        $this->assertValidationRuleIsImplementedInUrl($this->exampleUrl, 
+                'password_field', 'short', $this->passowrdRuleInstance);
     }
 
     #[Test]
     public function files_can_be_used_as_an_invalid_value(): void {
-        [$a1, $a2, $a3, $a4] = [$this->exampleUrl, 'username_field',
-            UploadedFile::fake()->image('avatar.jpg'), 'string'];
-
-        $this->assertValidationRuleIsImplementedInUrl($a1, $a2, $a3, $a4);
+        $this->assertValidationRuleIsImplementedInUrl($this->exampleUrl, 
+                'username_field', UploadedFile::fake()->image('avatar.jpg'), 
+                'string');
     }
 
     #[Test]
@@ -134,7 +120,8 @@ class ValidationAssertionsTest extends ValidationAssertionsTestHelpers {
                 fn() => $this->assertValidationRuleIsImplementedInUrl($a1,
                         $a2, $a3, $a4),
                 Exception::class,
-                __("{$this->transPrefix}.not_invalid_data", $replace)
+                $this->tryGetTrans("{$this->transPrefix}.not_invalid_data",
+                        $replace)
         );
     }
 
@@ -155,8 +142,8 @@ class ValidationAssertionsTest extends ValidationAssertionsTestHelpers {
                 fn() => $this->assertValidationRuleIsImplementedInUrl($a1,
                         $a2, $a3, $a4, $a5),
                 ValueError::class,
-                __("{$this->transPrefix}.unsupported_request_method",
-                        $replace)
+                $this->tryGetTrans("{$this->transPrefix}.unsupported_request_"
+                        . "method", $replace)
         );
     }
 
@@ -175,7 +162,8 @@ class ValidationAssertionsTest extends ValidationAssertionsTestHelpers {
                 fn() => $this->assertValidationRuleIsImplementedInUrl($a1,
                         $a2, $a3, $a4),
                 ValueError::class,
-                __("{$this->transPrefix}.incorrect_rule_value", $replace)
+                $this->tryGetTrans("{$this->transPrefix}.incorrect_rule_value",
+                        $replace)
         );
     }
 

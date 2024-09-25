@@ -1,24 +1,24 @@
-[Español](https://github.com/arielenter/laravel-phpunit-test-validation-rules/blob/main/README.es.md)
+[English](https://github.com/arielenter/laravel-phpunit-test-validation-rules/blob/main/README.md)
 
-# **Package for Laravel Phpunit validation rules testing.**
+# **Paquete de Laravel y Phpunit para probar si las reglas de validación proporcionadas están implementadas o no**
 
 ## Description
 
-Trait to be used within TestCase's tests. It provides assertions to check if a given validation rule is implemented in a given URL or route name for a given request method. One of its more attractive functionality is that it's possible to test multiple validation rules on one assertion instruccion.
+Esta rasgo esta hecho para ser implementado en pruebas TestCase. Proporciona afirmaciones que permiten probar si la(s) regla(s) de validación proporcionada esta implementada o no en un URL o nombre de ruta dado en un método de petición establecido. Una de las funciones más llamativa es la de probar varias reglas de validación en una sola afirmación.
 
-## How it works
+## ¿Cómo es que funciona?
 
-A desired validation rule is tested by submitting a provided invalid field value example to a given URL or route name using an established request method and asserting that the expected error message is returned from it. No need to provided the expected error thought. See Assertions Code In A Nutshell section to check in brief how exactly the code does this.
+La regla de validación deseada se prueba enviando el ejemplo de valor incorrecto proporcionado al URL o nombre de ruta establecido utilizando el método de petición dado, y afirmando que el mensaje de validación fallida esperado es recibido de vuelta. No es necesario proporcionar el mensaje de error. Si desea saber de manera breve como funciona el código, vaya a la sección titulada 'Código en breve'.
 
-## Installation
+## Instalación
 
 ```bash
 composer require --dev arielenter/laravel-phpunit-test-validation-rules
 ```
 
-## Usage
+## ¿Cómo se usa?
 
-Say the following routes are in place:
+Digamos que las siguientes rutas han sido establecidas:
 
 ### web.php
 
@@ -49,16 +49,16 @@ Route::post('/post', function (Request $request) {
 });
 
 /**
- * Unique extended requests for each route with defined rule and errorBag 
- * properties could have also been used as well. I just felt this was fine as a 
- * quick simple example.
+ * También es posible utilizar peticiones extendidas con sus propias reglas de 
+ * validación y bolsa de error, pero evite usarlas para simplificar este 
+ * ejemplo.
  * 
  */
 
 
 ```
 
-It would be necessary to have the following tests to make sure all the desired validations are in place:
+Seria necesario realizar las siguientes pruebas para comprobar que todas las reglas de validación deseadas han sido implementadas correctamente.
 
 ### RoutesValidationTest.php
 
@@ -80,7 +80,7 @@ class RoutesValidationTest extends TestCase {
     public function test_single_validation_rule_in_route_name() {
         $this->assertValidationRuleIsImplementedInUrl('/patch',
                 'accept_field', '', 'required', 'patch', 'patch_error_bag');
-//         arguments: $routeName, $fieldName, $invalidValueExample, 
+//         argumentos: $routeName, $fieldName, $invalidValueExample, 
 //         $validationRule, $requestMethod = 'post', $errorBag = 'default'
     }
 
@@ -90,13 +90,13 @@ class RoutesValidationTest extends TestCase {
 
         $this->assertValidationRuleIsImplementedInRouteName('delete_route',
                 'user_id_field', '101', ['numeric', 'max:100'], 'delete');
-//      'numeric|max:100' could also had been used here
+//      'numeric|max:100' también se pudo haber usado
     }
 
     public function test_all_rules_exhaustively_in_url_all_at_once() {
         $file = UploadedFile::fake()->image('avatar.jpg');
         $regex = ['regex:/^[a-zA-Z]([a-zA-Z0-9]|[a-zA-Z0-9]\.[a-zA-Z0-9])*$/'];
-//      regex has to be nested inside an array since it contains a pipe ('|') on it
+//      Regex debe ser encapsulada en un arreglo debido a la pipa ('|').
         $tooLong = Str::repeat('x', 21);
         $this->assertValidationRulesAreImplementedInUrl(
                 '/post',
@@ -112,27 +112,27 @@ class RoutesValidationTest extends TestCase {
                     ['password_field', 'short', Password::min(6)]
                 ]
         );
-//      assertValidationRulesAreImplementedInRouteName is also available
+//      assertValidationRulesAreImplementedInRouteName también esta disponible
     }
 }
 
 ```
 
-## Assetions Code In A Nutshell
+## Código en breve
 
-In brief, the following function is used to get the fail validation message:
+En palabras sencillas, la siguiente función es utilizada para obtener el mensaje de validación fallida esperado.
 
 ```php
 validator($data, $rule)->messages()->first();
 ```
 
-Once the fail validation error message is known, it is used to check if said message is returned when submitting the invalid data to the given URL using an already existent TestCase request function like the following and using one of it’s also already existent assertions:
+Una vez que se conoce el mensaje de validación fallida esperado, se comprueba que dicho mensaje es recibido de regreso al enviar los valores inválidos proporcionados al URL dado. Para dicho propósito se utiliza alguno de los metodos de petición preexistentes en la clase TestCase así como una afirmación que igualmente ya existe:
 
 ```php
 $this->post($uri, $data)->assertSessionHasErrorsIn($errorBag, $keys);
 ```
 
-The following is a quick example code that shows in a nutshell how the assertions were made.
+Lo siguiente es una versión abreviada del código que realiza las afirmaciones:
 
 ### AssertionsCodeInANutshellTest.php
 

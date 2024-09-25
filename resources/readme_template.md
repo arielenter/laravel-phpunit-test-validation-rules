@@ -1,3 +1,5 @@
+:other_languages
+
 # **:main_title**
 
 ## :description

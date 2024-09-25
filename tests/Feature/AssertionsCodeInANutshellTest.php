@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Arielenter\ValidationAssertions\Tests\Feature;
 
 use Arielenter\ValidationAssertions\Tests\TestCase;
 use Illuminate\Validation\Rule;
@@ -15,7 +15,7 @@ class AssertionsCodeInANutshellTest extends TestCase {
             string|Rule|array $validationRule,
             string $requestMethod = 'post',
             string $errorBag = 'default'
-    ) {
+    ): void {
         $fieldValue = [$fieldName => $invalidValueExample];
         $fieldRule = [$fieldName => $validationRule];
 
