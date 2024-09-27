@@ -1,14 +1,24 @@
 [English](https://github.com/arielenter/laravel-phpunit-test-validation-rules/blob/main/README.md)
 
-# **Paquete de Laravel y Phpunit para probar si las reglas de validación proporcionadas están implementadas o no**
+# **Paquete de Laravel y Phpunit para probar si las reglas de validación 
+proporcionadas están implementadas o no**
 
 ## Description
 
-Esta rasgo esta hecho para ser implementado en pruebas TestCase. Proporciona afirmaciones que permiten probar si la(s) regla(s) de validación proporcionada(s) esta implementada(s) o no en un URL o nombre de ruta dado en un método de petición establecido. Una de las funciones más llamativa es la de probar varias reglas de validación en una sola afirmación.
+Esta rasgo esta hecho para ser implementado en pruebas TestCase. Proporciona 
+afirmaciones que permiten probar si la(s) regla(s) de validación 
+proporcionada(s) esta implementada(s) o no en un URL o nombre de ruta dado en 
+un método de petición establecido. Una de las funciones más llamativa es la de 
+probar varias reglas de validación en una sola afirmación.
 
 ## ¿Cómo es que funciona?
 
-La regla de validación deseada se prueba enviando el ejemplo de valor incorrecto proporcionado al URL o nombre de ruta establecido utilizando el método de petición dado, y afirmando que el mensaje de validación fallida esperado es recibido de vuelta. No es necesario proporcionar el mensaje de error. Si desea saber de manera breve como funciona el código, vaya a la sección titulada 'Código en breve'.
+La regla de validación deseada se prueba enviando el ejemplo de valor 
+incorrecto proporcionado al URL o nombre de ruta establecido utilizando el 
+método de petición dado, y afirmando que el mensaje de validación fallida 
+esperado es recibido de vuelta. No es necesario proporcionar el mensaje de 
+error. Si desea saber de manera breve como funciona el código, vaya a la 
+sección titulada 'Código en breve'.
 
 ## Instalación
 
@@ -58,7 +68,8 @@ Route::post('/post', function (Request $request) {
 
 ```
 
-Seria necesario realizar las siguientes pruebas para comprobar que todas las reglas de validación deseadas han sido implementadas correctamente.
+Seria necesario realizar las siguientes pruebas para comprobar que todas las 
+reglas de validación deseadas han sido implementadas correctamente.
 
 ### RoutesValidationTest.php
 
@@ -96,7 +107,7 @@ class RoutesValidationTest extends TestCase {
     public function test_all_rules_exhaustively_in_url_all_at_once() {
         $file = UploadedFile::fake()->image('avatar.jpg');
         $regex = ['regex:/^[a-zA-Z]([a-zA-Z0-9]|[a-zA-Z0-9]\.[a-zA-Z0-9])*$/'];
-//      Regex debe ser encapsulada en un arreglo debido a la pipa ('|').
+//      regex debe ser encapsulada en un arreglo debido a la pipa ('|').
         $tooLong = Str::repeat('x', 21);
         $this->assertValidationRulesAreImplementedInUrl(
                 '/post',
@@ -118,15 +129,50 @@ class RoutesValidationTest extends TestCase {
 
 ```
 
+### Formato del argumento de tipo arreglo ‘lista’
+
+Considero que el ejemplo anterior donde se prueban múltiples reglas de 
+validación en una sola afirmación habla más que mil palabras por sí mismo. Sin 
+embargo de igual forma considere escribir una explicación al respecto, la cual 
+puede ser traducida del ingles al español de la siguiente forma:
+
+```php
+    /**
+     * @param array<array> $list Lista compuesta por arreglos en la que se 
+     * emparejan reglas de validación con ejemplos de datos inválidos para las 
+     * mismas. Estos arreglos deben tener tres llaves enteras: 0 para los/el 
+     * nombre(s) de campo, 1 para los/el ejemplo(s) de valor invalido y 2 la 
+     * regla de validación que se desea probar. Las llaves 0 y 1 pueden 
+     * contener múltiples campos y múltiples ejemplos de valores inválidos 
+     * respectivamente, para ello basta con anidarlos dentro de un arreglo. Los 
+     * nombres de campo deben ser siempre de tipo cadena. Reglas compuestas 
+     * pueden entregarse en una cadena separada por pipas (ejemplo 
+     * 'numeric|max:100') o en un arreglo (ejemplo ['numeric' => 'max:100']). 
+     * Las reglas sólo podrán ser de tipo cadena o instancias de Illuminate\
+     * Contracts\Validation\Rule. El formato de arreglo es el siguiente: 
+     * array<array{ 
+     *      0: string|array<string>, 
+     *      1: mixed|array<mixed|array<mixed>>,
+     *      2: string|Rule|array<string|Rule>
+     * }>
+     * 
+     */
+```
+
 ## Código en breve
 
-En palabras sencillas, la siguiente función es utilizada para obtener el mensaje de validación fallida esperado.
+En palabras sencillas, la siguiente función es utilizada para obtener el 
+mensaje de validación fallida esperado.
 
 ```php
 validator($data, $rule)->messages()->first();
 ```
 
-Una vez que se conoce el mensaje de validación fallida esperado, se comprueba que dicho mensaje es recibido de regreso al enviar los valores inválidos proporcionados al URL dado. Para dicho propósito se utiliza alguno de los metodos de petición preexistentes en la clase TestCase así como una afirmación que igualmente ya existe:
+Una vez que se conoce el mensaje de validación fallida esperado, se comprueba 
+que dicho mensaje es recibido de regreso al enviar los valores inválidos 
+proporcionados al URL dado. Para dicho propósito se utiliza alguno de los 
+metodos de petición preexistentes en la clase TestCase así como una afirmación 
+que igualmente ya existe:
 
 ```php
 $this->post($uri, $data)->assertSessionHasErrorsIn($errorBag, $keys);

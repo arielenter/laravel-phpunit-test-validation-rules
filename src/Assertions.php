@@ -79,7 +79,12 @@ trait Assertions {
      * Composed validation rules can be given either as a pipe | delimited 
      * string (example 'numeric|max:100') or an array (example 
      * ['numeric' => 'max:100']). Rules can only be string values or instances
-     * of Illuminate\Contracts\Validation\Rule.
+     * of Illuminate\Contracts\Validation\Rule. Array shape:
+     * array<array{
+     *      0: string|array<string>,
+     *      1: mixed|array<mixed|array<mixed>>,
+     *      2: string|Rule|array<string|Rule>
+     * }>
      * 
      */
     public function

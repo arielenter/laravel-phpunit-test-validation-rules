@@ -34,6 +34,14 @@ composer require --dev arielenter/laravel-phpunit-test-validation-rules
 :tests_file_content
 ```
 
+### :list_array_shape
+
+:the_following_explains_the_correct_shape
+
+```php
+:array_shape_phpdoc
+```
+
 ## :assertions_code_in_a_nuteshell
 
 :function_used_to_get_validation_fail_error

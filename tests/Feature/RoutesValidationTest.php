@@ -31,7 +31,7 @@ class RoutesValidationTest extends TestCase {
     public function test_all_rules_exhaustively_in_url_all_at_once() {
         $file = UploadedFile::fake()->image('avatar.jpg');
         $regex = ['regex:/^[a-zA-Z]([a-zA-Z0-9]|[a-zA-Z0-9]\.[a-zA-Z0-9])*$/'];
-//      :regex_has_to_be_nested_inside_an_array
+//:regex_has_to_be_nested_inside_an_array
         $tooLong = Str::repeat('x', 21);
         $this->assertValidationRulesAreImplementedInUrl(
                 '/post',
