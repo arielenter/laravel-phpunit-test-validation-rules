@@ -21,6 +21,9 @@ trait AssertionsHelper {
     private mixed $currentRowOriginalValue;
     private string|int $currentRowKey;
     private string $transKeyPrefix = 'arielenter_validation_assertions::errors';
+    private array $correctClasses = [
+        Rule::class
+    ];
 
     private function validateRequestMethod(string $requestMethod): string {
         $requestMethodLowerCase = strtolower($requestMethod);
@@ -49,7 +52,7 @@ trait AssertionsHelper {
         }
         foreach ($validationRule as $value) {
             $this->validateValidationRuleValueType($validationRule,
-                    $value, ['string'], [Rule::class]);
+                    $value, ['string']);
         }
     }
 
@@ -57,7 +60,6 @@ trait AssertionsHelper {
             mixed $validationRule,
             mixed $value,
             array $correctTypes,
-            array $correctClasses
     ): void {
         $valueType = gettype($value);
 
@@ -65,6 +67,7 @@ trait AssertionsHelper {
             return;
         }
 
+        $correctClasses = $this->correctClasses;
         if (!is_object($value)) {
             $correctTypesAndClasses = array_merge($correctTypes,
                     $correctClasses);
@@ -228,11 +231,20 @@ trait AssertionsHelper {
     }
 
     private function validateKeyTwoValueType(): void {
+        /**
+         * In ifRuleIsArrayValidateCorrectTypeOfItsValues, validation rule and 
+         * value were different because validation rule is always an array 
+         * there and its multiple values need to be tested to see they have a 
+         * valid type. Here, validation rule might be an array or not, but it 
+         * needs to have a valid type, and in this case array is one of them. 
+         * If it is an array, its multiple values will be tested by the 
+         * aforementioned method too later on the code.
+         * 
+         */
         $this->validateValidationRuleValueType(
                 validationRule: $this->currentRow[2],
                 value: $this->currentRow[2],
                 correctTypes: ['string', 'array'],
-                correctClasses: [Rule::class]
         );
     }
 

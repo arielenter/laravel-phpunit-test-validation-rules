@@ -139,40 +139,60 @@ class ValidationAssertionsTestHelpers extends TestCase {
         $composedRule = ['numeric', 'max:100', ['nor string or object']];
         $invalidComposedRuleValue = $composedRule[2];
 
-        $transKey = "{$this->transPrefix}.incorrect_rule_value_type";
-        $replace = [
-            'rule' => json_encode($composedRule),
-            'value' => json_encode($invalidComposedRuleValue),
-            'type' => gettype($invalidComposedRuleValue),
-            'correct_types' => 'string|Illuminate\Contracts\Validation\Rule',
-        ];
-
         $this->assertThrows(
                 fn() => $this->assertValidationRuleIsImplementedInUrl($a1, $a2,
                         $a3, $composedRule, $a5),
                 TypeError::class,
-                $this->tryGetTrans($transKey, $replace)
+                $this->getIncorrectRuleValueTypeError(
+                        $composedRule,
+                        $invalidComposedRuleValue,
+                        'string|' . Rule::class
+                )
         );
+    }
+
+    public function getIncorrectRuleValueTypeError(
+            mixed $rule,
+            mixed $invalidValueFromRule,
+            string $correctTypes
+    ) {
+        $transKey = "{$this->transPrefix}.incorrect_rule_value_type";
+        $replace = [
+            'rule' => json_encode($rule),
+            'value' => json_encode($invalidValueFromRule),
+            'type' => gettype($invalidValueFromRule),
+            'correct_types' => $correctTypes,
+        ];
+
+        return $this->tryGetTrans($transKey, $replace);
     }
 
     public function checkIncorrectRuleInstanceThrowExpectedError(): void {
         [$a1, $a2, $a3, $a5] = [$this->exampleUrl, 'user_id_field', '101',
             'delete'];
-        $composedRule = ['numeric', 'max:100', (Object) ['not rule instance']];
-        $invalidComposedRuleValue = $composedRule[2];
-
-        $transKey = "{$this->transPrefix}.incorrect_object_rule";
-        $replace = [
-            'rule' => get_class($invalidComposedRuleValue),
-            'classes' => 'Illuminate\Contracts\Validation\Rule',
+        $composedRule = [
+            'numeric', 'max:100', (Object) ['not instanceof supported classes']
         ];
+        $invalidComposedRuleValue = $composedRule[2];
 
         $this->assertThrows(
                 fn() => $this->assertValidationRuleIsImplementedInUrl($a1, $a2,
                         $a3, $composedRule, $a5),
                 TypeError::class,
-                $this->tryGetTrans($transKey, $replace)
+                $this->getIncorrectRuleInstanceError($invalidComposedRuleValue)
         );
+    }
+
+    public function getIncorrectRuleInstanceError(
+            object $invalidComposedRuleValue
+    ) {
+        $transKey = "{$this->transPrefix}.incorrect_object_rule";
+        $replace = [
+            'rule' => get_class($invalidComposedRuleValue),
+            'classes' => Rule::class
+        ];
+
+        return $this->tryGetTrans($transKey, $replace);
     }
 
     public function checkValidationAssertionFailsFromTheExpectedListRow(
@@ -231,7 +251,7 @@ class ValidationAssertionsTestHelpers extends TestCase {
     }
 
     public function invalidRowShapeExample1(): array {
-        $listExample = ['username_field', 'should had been nested', 'required'];
+        $listExample = ['this row', 'should had been', 'nested'];
 
         $transKey = "{$this->transPrefix}.row_should_had_been_a_nested_"
                 . "array";
@@ -309,7 +329,7 @@ class ValidationAssertionsTestHelpers extends TestCase {
     }
 
     public function invalidRowShapeExample6(): array {
-        $listExample = [[(object) 'object_field_name?', '', 'required']];
+        $listExample = [[(object) 'an_object_field_name?', '', 'required']];
         $row = $listExample[0];
         $fieldName = $listExample[0][0];
 
@@ -327,6 +347,34 @@ class ValidationAssertionsTestHelpers extends TestCase {
             $listExample,
             TypeError::class,
             $this->tryGetTrans($transKey, $replace)
+        ];
+    }
+
+    public function invalidRowShapeExample7(): array {
+        $listExample = [['username_field', '', true]];
+        $invalidRuleValue = $listExample[0][2];
+
+        return [
+            $listExample,
+            TypeError::class,
+            $this->getIncorrectRuleValueTypeError(
+                    $invalidRuleValue,
+                    $invalidRuleValue,
+                    'string|array|' . Rule::class
+            )
+        ];
+    }
+
+    public function invalidRowShapeExample8(): array {
+        $listExample = [
+            ['username_field', '', (object) ['not intanceof supported classes']]
+        ];
+        $invalidRuleValue = $listExample[0][2];
+
+        return [
+            $listExample,
+            TypeError::class,
+            $this->getIncorrectRuleInstanceError($invalidRuleValue)
         ];
     }
 }

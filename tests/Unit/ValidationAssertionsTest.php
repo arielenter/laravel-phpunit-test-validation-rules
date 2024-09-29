@@ -12,7 +12,8 @@ use ValueError;
 
 class ValidationAssertionsTest extends ValidationAssertionsTestHelpers {
 
-    use ValidationAssertions, TransAssertions;
+    use ValidationAssertions,
+        TransAssertions;
 
     #[Test]
     public function will_pass_if_validation_is_implemented_in_url(): void {
@@ -40,13 +41,13 @@ class ValidationAssertionsTest extends ValidationAssertionsTestHelpers {
 
     #[Test]
     public function if_no_error_bag_is_given_default_is_used(): void {
-        $this->assertValidationRuleIsImplementedInUrl($this->exampleUrl, 
+        $this->assertValidationRuleIsImplementedInUrl($this->exampleUrl,
                 'user_id_field', 'not a number', 'numeric', 'delete');
     }
 
     #[Test]
     public function if_no_request_method_is_specified_post_is_assumed(): void {
-        $this->assertValidationRuleIsImplementedInUrl($this->exampleUrl, 
+        $this->assertValidationRuleIsImplementedInUrl($this->exampleUrl,
                 'username_field', '', 'required');
     }
 
@@ -59,30 +60,30 @@ class ValidationAssertionsTest extends ValidationAssertionsTestHelpers {
 
     #[Test]
     public function will_fail_if_validation_is_not_implemented_in_url(): void {
-        $this->checkValidationAssertionThrowsExpectedError($this->exampleUrl, 
-                'username_field', 'confirmed is not implemented for username', 
+        $this->checkValidationAssertionThrowsExpectedError($this->exampleUrl,
+                'username_field', 'confirmed is not implemented for username',
                 'confirmed');
 
-        $this->checkValidationAssertionThrowsExpectedError($this->exampleUrl, 
+        $this->checkValidationAssertionThrowsExpectedError($this->exampleUrl,
                 'non_implemented_field', '', 'required');
 
-        $c5 = "Session is missing expected key [errors].\n"
+        $a5 = "Session is missing expected key [errors].\n"
                 . "Failed asserting that false is true.";
 
-        $this->checkValidationAssertionThrowsExpectedError('/non-existent-url', 
-                'username_field', '', 'required', $c5);
+        $this->checkValidationAssertionThrowsExpectedError('/nonexistent-url',
+                'username_field', '', 'required', $a5);
     }
 
     #[Test]
     public function instances_of_validation_rule_can_be_used(): void {
-        $this->assertValidationRuleIsImplementedInUrl($this->exampleUrl, 
+        $this->assertValidationRuleIsImplementedInUrl($this->exampleUrl,
                 'password_field', 'short', $this->passowrdRuleInstance);
     }
 
     #[Test]
     public function files_can_be_used_as_an_invalid_value(): void {
-        $this->assertValidationRuleIsImplementedInUrl($this->exampleUrl, 
-                'username_field', UploadedFile::fake()->image('avatar.jpg'), 
+        $this->assertValidationRuleIsImplementedInUrl($this->exampleUrl,
+                'username_field', UploadedFile::fake()->image('avatar.jpg'),
                 'string');
     }
 
@@ -107,7 +108,8 @@ class ValidationAssertionsTest extends ValidationAssertionsTestHelpers {
     }
 
     #[Test]
-    public function error_is_thrown_if_value_example_is_not_invalid(): void {
+    public function
+    error_is_thrown_if_not_invalid_value_example_is_given(): void {
         [$a1, $a2, $a3, $a4] = [$this->exampleUrl, 'username_field',
             'not empty', 'required'];
 
@@ -229,11 +231,11 @@ class ValidationAssertionsTest extends ValidationAssertionsTestHelpers {
     public function
     multiple_invalid_value_examples_can_be_associated_to_a_field(): void {
         /**
-         * The following regex rule example must be established as an array 
-         * since it contains a pipe | in it, which are used in delimited 
-         * strings composed rules like the following one: numeric|max:100. For 
-         * this reason if the regex example were not to be encapsulated into an 
-         * array, the validator confuses it as two separated rules which won't 
+         * The following regex rule example must be nested inside an array 
+         * because it contains a pipe | in it, which are used in delimited 
+         * strings composed rules (example 'numeric|max:100'). For this reason 
+         * if the regex example were not to be encapsulated into an array, the 
+         * validator confuses it as two separated rules which won't 
          * work.
          * 
          */

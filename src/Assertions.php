@@ -118,7 +118,7 @@ trait Assertions {
     /**
      * Same as assertValidationRulesAreImplementedInUrl but route names can be 
      * used instead of a URL. Check the aforementioned base assertion PHPDoc 
-     * for more info in the correct list supported format.
+     * for more info about the correct array shape for the argument $list.
      * 
      */
     public function assertValidationRulesAreImplementedInRouteName(
