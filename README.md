@@ -85,14 +85,15 @@ class RoutesValidationTest extends TestCase {
 
     use ValidationAssertions;
 
-    public function test_single_validation_rule_in_route_name() {
+    public function test_single_validation_rule_in_patch_url() {
         $this->assertValidationRuleIsImplementedInUrl('/patch',
                 'accept_field', '', 'required', 'patch', 'patch_error_bag');
 //         arguments: $url, $fieldName, $invalidValueExample, 
 //         $validationRule, $requestMethod = 'post', $errorBag = 'default'
     }
 
-    public function test_all_rules_exhaustively_in_url_one_rule_at_a_time() {
+    public function
+    test_all_rules_exhaustively_one_rule_at_a_time_in_delete_url_and_route() {
         $this->assertValidationRuleIsImplementedInUrl('/delete',
                 'user_id_field', 'not numeric', 'numeric', 'delete');
 
@@ -101,7 +102,7 @@ class RoutesValidationTest extends TestCase {
 //      'numeric|max:100' could also had been used here
     }
 
-    public function test_all_rules_exhaustively_in_url_all_at_once() {
+    public function test_all_rules_exhaustively_in_post_url_all_at_once() {
         $file = UploadedFile::fake()->image('avatar.jpg');
         $regex = ['regex:/^[a-zA-Z]([a-zA-Z0-9]|[a-zA-Z0-9]\.[a-zA-Z0-9])*$/'];
 //      regex has to be nested inside an array since it contains a pipe | on it
@@ -143,7 +144,7 @@ formatted:
      * nesting them inside an array. Field names must always be string values.
      * Composed validation rules can be given either as a pipe | delimited 
      * string (example 'numeric|max:100') or an array (example 
-     * ['numeric' => 'max:100']). Rules can only be string values or instances
+     * ['numeric', 'max:100']). Rules can only be string values or instances
      * of Illuminate\Contracts\Validation\Rule. Array shape:
      * array<array{
      *      0: string|array<string>,

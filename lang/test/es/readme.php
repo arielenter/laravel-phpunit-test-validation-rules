@@ -4,9 +4,7 @@ return [
     "other_languages" => "[English](https://github.com/arielenter/"
     . "laravel-phpunit-test-validation-rules/blob/main/README.md)",
     
-    "main_title" => 
-"Paquete de Laravel y Phpunit para probar si las reglas de validación 
-proporcionadas están implementadas o no",
+    "main_title" => "Paquete de Laravel y Phpunit para probar si las reglas de validación proporcionadas están implementadas o no",
     
     "description" => "Description",
     
@@ -57,7 +55,7 @@ puede ser traducida del ingles al español de la siguiente forma:",
      * respectivamente, para ello basta con anidarlos dentro de un arreglo. Los 
      * nombres de campo deben ser siempre de tipo cadena. Reglas compuestas 
      * pueden entregarse en una cadena separada por pipas (ejemplo 
-     * 'numeric|max:100') o en un arreglo (ejemplo ['numeric' => 'max:100']). 
+     * 'numeric|max:100') o en un arreglo (ejemplo ['numeric', 'max:100']). 
      * Las reglas sólo podrán ser de tipo cadena o instancias de Illuminate\
      * Contracts\Validation\Rule. El formato de arreglo es el siguiente: 
      * array<array{ 

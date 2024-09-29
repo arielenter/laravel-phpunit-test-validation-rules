@@ -1,7 +1,6 @@
 [English](https://github.com/arielenter/laravel-phpunit-test-validation-rules/blob/main/README.md)
 
-# **Paquete de Laravel y Phpunit para probar si las reglas de validación 
-proporcionadas están implementadas o no**
+# **Paquete de Laravel y Phpunit para probar si las reglas de validación proporcionadas están implementadas o no**
 
 ## Description
 
@@ -88,14 +87,15 @@ class RoutesValidationTest extends TestCase {
 
     use ValidationAssertions;
 
-    public function test_single_validation_rule_in_route_name() {
+    public function test_single_validation_rule_in_patch_url() {
         $this->assertValidationRuleIsImplementedInUrl('/patch',
                 'accept_field', '', 'required', 'patch', 'patch_error_bag');
 //         argumentos: $url, $fieldName, $invalidValueExample, 
 //         $validationRule, $requestMethod = 'post', $errorBag = 'default'
     }
 
-    public function test_all_rules_exhaustively_in_url_one_rule_at_a_time() {
+    public function
+    test_all_rules_exhaustively_one_rule_at_a_time_in_delete_url_and_route() {
         $this->assertValidationRuleIsImplementedInUrl('/delete',
                 'user_id_field', 'not numeric', 'numeric', 'delete');
 
@@ -104,7 +104,7 @@ class RoutesValidationTest extends TestCase {
 //      'numeric|max:100' también se pudo haber usado
     }
 
-    public function test_all_rules_exhaustively_in_url_all_at_once() {
+    public function test_all_rules_exhaustively_in_post_url_all_at_once() {
         $file = UploadedFile::fake()->image('avatar.jpg');
         $regex = ['regex:/^[a-zA-Z]([a-zA-Z0-9]|[a-zA-Z0-9]\.[a-zA-Z0-9])*$/'];
 //      regex debe ser encapsulada en un arreglo debido a la pipa ('|').
@@ -147,7 +147,7 @@ puede ser traducida del ingles al español de la siguiente forma:
      * respectivamente, para ello basta con anidarlos dentro de un arreglo. Los 
      * nombres de campo deben ser siempre de tipo cadena. Reglas compuestas 
      * pueden entregarse en una cadena separada por pipas (ejemplo 
-     * 'numeric|max:100') o en un arreglo (ejemplo ['numeric' => 'max:100']). 
+     * 'numeric|max:100') o en un arreglo (ejemplo ['numeric', 'max:100']). 
      * Las reglas sólo podrán ser de tipo cadena o instancias de Illuminate\
      * Contracts\Validation\Rule. El formato de arreglo es el siguiente: 
      * array<array{ 
