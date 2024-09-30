@@ -7,7 +7,7 @@ use function trans;
 
 trait TransAssertions {
 
-    use TransAssertionsHelper;
+    use TransAssertionsHelpers;
 
     /**
      * Checks if a given translation key actualy exist, if it does't it throws 

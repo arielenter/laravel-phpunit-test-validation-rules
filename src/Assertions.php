@@ -19,7 +19,7 @@ use function route;
  */
 trait Assertions {
 
-    use AssertionsHelper;
+    use AssertionsHelpers;
 
     public function assertValidationRuleIsImplementedInUrl(
             string $url,

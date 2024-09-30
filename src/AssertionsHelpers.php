@@ -15,7 +15,7 @@ use ValueError;
 use function __;
 use function validator;
 
-trait AssertionsHelper {
+trait AssertionsHelpers {
 
     private mixed $currentRow;
     private mixed $currentRowOriginalValue;

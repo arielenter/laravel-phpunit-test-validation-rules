@@ -5,7 +5,7 @@ namespace Arielenter\ValidationAssertions\Tests\Support;
 use Illuminate\Support\Facades\App;
 use function __;
 
-trait TransAssertionsHelper {
+trait TransAssertionsHelpers {
 
     private function getTransKeyMissingFailMsg(
             string $transKey,
