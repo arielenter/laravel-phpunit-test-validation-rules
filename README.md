@@ -46,7 +46,7 @@ Route::delete('/delete', function (Request $request) {
 })->name('delete_route');
 
 Route::post('/post', function (Request $request) {
-    $regexRule = 'regex:/^[a-zA-Z]([a-zA-Z0-9]|[a-zA-Z0-9]\.[a-zA-Z0-9])*$/';
+    $regexRule = 'regex:/^[a-z]([a-z0-9]|[a-z0-9]\.[a-z0-9])*$/i';
     $request->validate([
         'username_field' => ['required', 'string', 'max:20', $regexRule],
         'password_field' => [Password::min(6)],
@@ -104,8 +104,6 @@ class RoutesValidationTest extends TestCase {
 
     public function test_all_rules_exhaustively_in_post_url_all_at_once() {
         $file = UploadedFile::fake()->image('avatar.jpg');
-        $regex = ['regex:/^[a-zA-Z]([a-zA-Z0-9]|[a-zA-Z0-9]\.[a-zA-Z0-9])*$/'];
-//      regex has to be nested inside an array since it contains a pipe | on it
         $tooLong = Str::repeat('x', 21);
         $this->assertValidationRulesAreImplementedInUrl(
                 '/post',
@@ -116,7 +114,12 @@ class RoutesValidationTest extends TestCase {
                     [
                         ['username_field', 'same_regex_field'],
                         ['0invalid', 'inva..lid', 'invalid.', 'inv@lid'],
-                        $regex
+/**
+ *                      regex has to be nested inside an array bacause it 
+ *                      contains a pipe | on it, otherwise it will be confuse 
+ *                      as a composed string rule (example 'numeric|max:100')                      
+*/
+                        ['regex:/^[a-z]([a-z0-9]|[a-z0-9]\.[a-z0-9])*$/i']
                     ],
                     ['password_field', 'short', Password::min(6)]
                 ]

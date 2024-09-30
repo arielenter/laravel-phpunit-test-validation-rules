@@ -18,8 +18,7 @@ class ValidationAssertionsTestHelpers extends TestCase {
 
     use TransAssertions;
 
-    public string $regexRuleExample = 'regex:'
-            . '/^[a-zA-Z]([a-zA-Z0-9]|[a-zA-Z0-9]\.[a-zA-Z0-9])*$/';
+    public string $regexRule = 'regex:/^[a-z]([a-z0-9]|[a-z0-9]\.[a-z0-9])*$/i';
     public string $exampleUrl = '/example-url';
     public string $exampleRouteName = 'example_route_name';
     public string $exampleErrorBagName = 'example_error_bag';
@@ -31,7 +30,7 @@ class ValidationAssertionsTestHelpers extends TestCase {
     public function setUp(): void {
         parent::setUp();
 
-        $regexRule = $this->regexRuleExample;
+        $regexRule = $this->regexRule;
         $this->passowrdRuleInstance = Password::min(6);
         $validationRules = [
             'username_field' => ['required', 'string', 'min:6', $regexRule],

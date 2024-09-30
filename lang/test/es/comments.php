@@ -11,7 +11,9 @@ return [
     "could_also_had_been_used_here" => "también se pudo haber usado",
 
     "regex_has_to_be_nested_inside_an_array" => 
-"      regex debe ser encapsulada en un arreglo debido a la pipa ('|').", 
+                       "regex debe ser encapsulada en un arreglo debido a la 
+ *                      pipa |, ya que de otra forma seria confundida con una 
+ *                      regla compuesta (ejemplo 'numeric|max:100').", 
 
     "is_also_available" => "también esta disponible"
 ];

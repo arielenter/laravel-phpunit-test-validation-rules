@@ -245,7 +245,7 @@ class ValidationAssertionsTest extends ValidationAssertionsTestHelpers {
                     [
                         'username_field',
                         ['0invalid', 'inva..lid', 'invalid.', 'inv@lid'],
-                        [$this->regexRuleExample]
+                        [$this->regexRule]
                     ],
                 ]
         );
@@ -261,7 +261,7 @@ class ValidationAssertionsTest extends ValidationAssertionsTestHelpers {
                     [
                         ['username_field', 'same_regex_field'],
                         ['0invalid', 'inva..lid', 'invalid.', 'inv@lid'],
-                        [$this->regexRuleExample]
+                        [$this->regexRule]
                     ]
                 ]
         );

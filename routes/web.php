@@ -14,7 +14,7 @@ Route::delete('/delete', function (Request $request) {
 })->name('delete_route');
 
 Route::post('/post', function (Request $request) {
-    $regexRule = 'regex:/^[a-zA-Z]([a-zA-Z0-9]|[a-zA-Z0-9]\.[a-zA-Z0-9])*$/';
+    $regexRule = 'regex:/^[a-z]([a-z0-9]|[a-z0-9]\.[a-z0-9])*$/i';
     $request->validate([
         'username_field' => ['required', 'string', 'max:20', $regexRule],
         'password_field' => [Password::min(6)],

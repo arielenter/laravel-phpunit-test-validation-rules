@@ -11,7 +11,9 @@ return [
     "could_also_had_been_used_here" => "could also had been used here",
 
     "regex_has_to_be_nested_inside_an_array" => 
-"      regex has to be nested inside an array since it contains a pipe | on it",
+                       "regex has to be nested inside an array bacause it 
+ *                      contains a pipe | on it, otherwise it will be confuse 
+ *                      as a composed string rule (example 'numeric|max:100')",
 
     "is_also_available" => "is also available"
 ];
