@@ -1,10 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
-$storage = Storage::createLocalDriver(['root' => __DIR__ . '/../../../']);
-
-$readmeTemplate = $storage->get('resources/readme_template.md');
+$readmeTemplate = File::get('resources/readme_template.md');
 
 $filesPath = [
     'routes' => 'routes/web.php',
@@ -17,7 +15,7 @@ $filesNameAndContent = [];
 foreach ($filesPath as $key => $filePath) {
     $filesNameAndContent[$key . '_file'] = basename($filePath);
     $filesNameAndContent[$key . '_file_content'] = str_replace('Arielenter'
-            . '\ValidationAssertions\\', '', $storage->get($filePath));
+            . '\ValidationAssertions\\', '', File::get($filePath));
 }
 
 return [
