@@ -1,8 +1,8 @@
 {
     "name": "arielenter/laravel-phpunit-test-validation-rules",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "dist": {
-        "url": "https://github.com/arielenter/laravel-phpunit-test-validation-rules/archive/refs/tags/v1.0.4.tar.gz",
+        "url": "https://github.com/arielenter/laravel-phpunit-test-validation-rules/archive/refs/tags/v1.0.5.tar.gz",
         "type": "tar"
     },
     "description": "Assertion methods that help to test that the desired validation rule(s) are implemented in a given URL or route name.",
