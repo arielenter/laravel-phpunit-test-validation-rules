@@ -51,7 +51,7 @@ Route::post('/post', function (Request $request) {
     $regexRule = 'regex:/^[a-z]([a-z0-9]|[a-z0-9]\.[a-z0-9])*$/i';
     $request->validate([
         'username_field' => ['required', 'string', 'max:20', $regexRule],
-        'password_field' => [Password::min(6)],
+        'password_field' => Password::min(6),
         'same_max_field' => 'max:20',
         'same_regex_field' => [$regexRule],
     ]);
