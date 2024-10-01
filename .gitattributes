@@ -8,4 +8,3 @@ tests/                                  export-ignore
 docker-compose.yml                      export-ignore
 phpunit.xml                             export-ignore
 composer.lock                           export-ignore
-README*                                 export-ignore
