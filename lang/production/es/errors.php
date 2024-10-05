@@ -29,19 +29,20 @@ return [
     . "incorrecto. :value tiene un tipo de valor ':type' pero solo los "
     . "siguientes tipos son admitidos ':correct_types'",
     
-    "incorrect_object_rule" => "Rule :rule is not an instance of "
+    "incorrect_object_rule" => "La regla :rule no es una instancia de "
     . ":classes.",
     
-    "wrong_field_name_value_type" => "Field name given with key ':field_key' "
-    . "and value :field_name of row with key ':row_key' and value :row_value "
-    . "should had been a string. Instead a :actual_type was given instead.",
+    "wrong_field_name_value_type" => "El nombre de campo con llave "
+    . "':field_key' y el valor :field_name de la fila con llave ':row_key' y "
+    . "el valor :row_value debió ser una cadena de caracteres. Sin embargo el "
+    . "valor proporcionado es de tipo :actual_type.",
     
-    "unsupported_request_method" => "The given request method ':method' is not "
-    . "supported. The only supported methods are the following: "
-    . ":supported_methods.",
+    "unsupported_request_method" => "El método de petición proporcionado "
+    . "':method' no esta soportado. Los únicos métodos soportados son los "
+    . "siguientes: :supported_methods.",
     
-    "incorrect_rule_value" => "Rule given :rule doesn't appear to be a known "
-    . "possible rule name. Make sure you are written the rule name correctly. "
-    . "The 'validator()' function returned the following error message: "
+    "unknown_rule_given" => "La regla de validación proporcionada :rule no "
+    . "parece ser una regla conocida. Cerciorate que la estas escribiendo "
+    . "correctamente. La función 'validator()' retorno el siguiente error: "
     . ":validator_error"
 ];
