@@ -3,17 +3,21 @@
 namespace Arielenter\ValidationAssertions\Tests\Unit;
 
 use Arielenter\Validation\Assertions as ValidationAssertions;
+use Arielenter\Validation\Exceptions\NotAnInvalidValueExampleForGivenRuleException;
+use Arielenter\Validation\Exceptions\UnknownRuleGivenException;
+use Arielenter\Validation\Exceptions\UnsupportedRequestMethodException;
 use Arielenter\ValidationAssertions\Tests\Support\TransAssertions;
-use Exception;
+use Arielenter\ValidationAssertions\Tests\Support\ValidationAssertionsTestHelpers;
+use Arielenter\ValidationAssertions\Tests\TestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Session;
 use PHPUnit\Framework\Attributes\Test;
-use ValueError;
 
-class ValidationAssertionsTest extends ValidationAssertionsTestHelpers {
+class ValidationAssertionsTest extends TestCase {
 
     use ValidationAssertions,
-        TransAssertions;
+        TransAssertions,
+        ValidationAssertionsTestHelpers;
 
     #[Test]
     public function will_pass_if_validation_is_implemented_in_url(): void {
@@ -109,7 +113,7 @@ class ValidationAssertionsTest extends ValidationAssertionsTestHelpers {
 
     #[Test]
     public function
-    error_is_thrown_if_not_invalid_value_example_is_given(): void {
+    error_is_thrown_if_a_not_invalid_value_example_is_given(): void {
         [$a1, $a2, $a3, $a4] = [$this->exampleUrl, 'username_field',
             'not empty', 'required'];
 
@@ -121,7 +125,7 @@ class ValidationAssertionsTest extends ValidationAssertionsTestHelpers {
         $this->assertThrows(
                 fn() => $this->assertValidationRuleIsImplementedInUrl($a1,
                         $a2, $a3, $a4),
-                Exception::class,
+                NotAnInvalidValueExampleForGivenRuleException::class,
                 $this->tryGetTrans("{$this->transPrefix}.not_invalid_data",
                         $replace)
         );
@@ -143,7 +147,7 @@ class ValidationAssertionsTest extends ValidationAssertionsTestHelpers {
         $this->assertThrows(
                 fn() => $this->assertValidationRuleIsImplementedInUrl($a1,
                         $a2, $a3, $a4, $a5),
-                ValueError::class,
+                UnsupportedRequestMethodException::class,
                 $this->tryGetTrans("{$this->transPrefix}.unsupported_request_"
                         . "method", $replace)
         );
@@ -163,8 +167,8 @@ class ValidationAssertionsTest extends ValidationAssertionsTestHelpers {
         $this->assertThrows(
                 fn() => $this->assertValidationRuleIsImplementedInUrl($a1,
                         $a2, $a3, $a4),
-                ValueError::class,
-                $this->tryGetTrans("{$this->transPrefix}.incorrect_rule_value",
+                UnknownRuleGivenException::class,
+                $this->tryGetTrans("{$this->transPrefix}.unknown_rule_given",
                         $replace)
         );
     }
@@ -276,4 +280,9 @@ class ValidationAssertionsTest extends ValidationAssertionsTestHelpers {
                     $invalidRowShapeExample);
         }
     }
+
+//    #[Test]
+//    public function example(): void {
+//        $this->assertValidationRulesAreImplementedInUrl('ejem', [[(object) 'an_object_field_name?', '', 'required']]);
+//    }
 }

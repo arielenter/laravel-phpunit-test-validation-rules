@@ -4,6 +4,13 @@ declare(strict_types=1);
 
 namespace Arielenter\Validation;
 
+use Arielenter\Validation\Exceptions\AssertionFailedException;
+use Arielenter\Validation\Exceptions\IncorrectRuleValueTypeException;
+use Arielenter\Validation\Exceptions\RowHasAMissingKeyException;
+use Arielenter\Validation\Exceptions\RowShouldHadBeenANestedArrayException;
+use Arielenter\Validation\Exceptions\UnknownRuleGivenException;
+use Arielenter\Validation\Exceptions\UnsupportedRequestMethodException;
+use Arielenter\Validation\Exceptions\WrongFieldNameValueTypeException;
 use Illuminate\Contracts\Validation\Rule;
 use function route;
 
@@ -19,8 +26,6 @@ use function route;
  */
 trait Assertions {
 
-    use AssertionsHelpers;
-
     public function assertValidationRuleIsImplementedInUrl(
             string $url,
             string $fieldName,
@@ -29,18 +34,22 @@ trait Assertions {
             string $requestMethod = 'post',
             string $errorBag = 'default'
     ): void {
-        $validatedRequestMethod = $this->validateRequestMethod($requestMethod);
-        $this->ifRuleIsArrayValidateCorrectTypeOfItsValues($validationRule);
+        $validatedRequestMethod = UnsupportedRequestMethodException::
+                validateRequestMethod($requestMethod);
+
+        IncorrectRuleValueTypeException::
+        ifRuleIsArrayValidateCorrectTypeOfItsValues($validationRule);
 
         $invalidDataExample = [$fieldName => $invalidValueExample];
         $fieldValidationRule = [$fieldName => $validationRule];
-        $expectedErrorMessage = $this->getExpectedErrorMessage(
-                $invalidDataExample,
-                $fieldValidationRule,
-                $validationRule
-        );
 
-        $this->submitInvalidDataExampleToUrlAndAssertItReturnsExpectedErrMsg(
+        $expectedErrorMessage = UnknownRuleGivenException::
+                tryGetValidationErrorMessage($invalidDataExample,
+                        $fieldValidationRule, $validationRule);
+
+        AssertionFailedException::
+        trySubmitInvalidDataExampleToUrlAndAssertItReturnsExpectedErrMsg(
+                $this,
                 $url,
                 $invalidDataExample,
                 $fieldName,
@@ -94,23 +103,33 @@ trait Assertions {
             string $requestMethod = 'post',
             string $errorBag = 'default'
     ): void {
-        foreach ($list as $this->currentRowKey => $this->currentRow) {
-            $this->validateRowArrayShape();
+        foreach ($list as $currentRowKey => $currentRow) {
+            RowShouldHadBeenANestedArrayException::validateCurrentRowIsArray(
+                    $currentRow, $currentRowKey);
 
-            $fieldValuePairs = $this->pairFieldsWithValues();
-            $validationRule = $this->currentRow[2];
+            RowHasAMissingKeyException::
+            validateCurrentRowHasIntKeysCeroOneAndTwo($currentRow,
+                    $currentRowKey);
 
-            foreach ($fieldValuePairs as $fieldValuePair) {
-                [$fieldName, $invalidValueExample] = $fieldValuePair;
+            $validationRule = $currentRow[2];
+            IncorrectRuleValueTypeException
+            ::validateKeyTwoValueType($validationRule, ['string', 'array']);
 
-                $this->assertValidationRuleIsImplementedInUrl(
-                        $url,
-                        $fieldName,
-                        $invalidValueExample,
-                        $validationRule,
-                        $requestMethod,
-                        $errorBag
-                );
+            $fieldNames = (is_array($currentRow[0])) ? $currentRow[0] :
+                    array($currentRow[0]);
+
+            $invalidValueExamples = (is_array($currentRow[1])) ?
+                    $currentRow[1] : array($currentRow[1]);
+
+            foreach ($fieldNames as $fieldKey => $fieldName) {
+                WrongFieldNameValueTypeException::validateFieldNameIsString(
+                        $fieldKey, $fieldName, $currentRowKey, $currentRow);
+
+                foreach ($invalidValueExamples as $invalidValueExample) {
+                    $this->assertValidationRuleIsImplementedInUrl($url, 
+                            $fieldName, $invalidValueExample, $validationRule, 
+                            $requestMethod, $errorBag);
+                }
             }
         }
     }
