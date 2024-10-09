@@ -1,19 +1,19 @@
 <?php
 
 return [
-    "extended_request_can_had_been_used" => 
-  "También es posible utilizar peticiones extendidas con sus propias reglas de 
+    'extended_request_can_had_been_used' => 
+  'También es posible utilizar peticiones extendidas con sus propias reglas de 
  * validación y bolsa de error, pero evite usarlas para simplificar este 
- * ejemplo.",
+ * ejemplo.',
 
-    "arguments" => "argumentos",
+    'arguments' => 'argumentos',
 
-    "could_also_had_been_used_here" => "también se pudo haber usado",
+    'could_also_had_been_used_here' => 'también se pudo haber usado',
 
-    "regex_has_to_be_nested_inside_an_array" => 
-                       "regex debe ser encapsulada en un arreglo debido a la 
+    'regex_has_to_be_nested_inside_an_array' => 
+                       'regex debe ser encapsulada en un arreglo debido a la 
  *                      pipa |, ya que de otra forma seria confundida con una 
- *                      regla compuesta (ejemplo 'numeric|max:100').", 
+ *                      regla compuesta (ejemplo ‘numeric|max:100’).', 
 
-    "is_also_available" => "también esta disponible"
+    'is_also_available' => 'también esta disponible'
 ];

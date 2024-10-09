@@ -4,9 +4,9 @@
 
 ## Description
 
-Trait to be used within TestCase's tests. It provides assertions to check if 
+Trait to be used within TestCase’s tests. It provides assertions to check if 
 a given validation rule is implemented in a given URL or route name for a 
-given request method. One of its more attractive functionality is that it's 
+given request method. One of its more attractive functionality is that it’s 
 possible to test multiple validation rules on one assertion instruccion.
 
 ## How it works
@@ -117,7 +117,7 @@ class RoutesValidationTest extends TestCase {
 /**
  *                      regex has to be nested inside an array bacause it 
  *                      contains a pipe | on it, otherwise it will be confuse 
- *                      as a composed string rule (example 'numeric|max:100')                      
+ *                      as a composed string rule (example ‘numeric|max:100’)                      
 */
                         ['regex:/^[a-z]([a-z0-9]|[a-z0-9]\.[a-z0-9])*$/i']
                     ],
@@ -130,7 +130,7 @@ class RoutesValidationTest extends TestCase {
 
 ```
 
-### Argument 'list' array shape
+### Argument ‘list’ array shape
 
 Though I believe that the last example to test multiple rules in one 
 assertion says more than a thousand words on it self, I decided it was still a 
@@ -139,15 +139,15 @@ formatted:
 
 ```php
     /**
-     * @param array<array> $list List of arrays where validation rules are 
+     * @param array<array> \$list List of arrays where validation rules are 
      * paired with invalid data examples for them. This nested arrays must have 
      * the following 3 keys: 0 for Field(s), 1 for Invalid Value Example(s) and 
      * lastly 2 for the Validation Rule desired to be tested. Key 0 and 1 can 
      * have multiple field names and invalid value examples respectively by 
      * nesting them inside an array. Field names must always be string values.
      * Composed validation rules can be given either as a pipe | delimited 
-     * string (example 'numeric|max:100') or an array (example 
-     * ['numeric', 'max:100']). Rules can only be string values or instances
+     * string (example ‘numeric|max:100’) or an array (example 
+     * [‘numeric’, ‘max:100’]). Rules can only be string values or instances
      * of Illuminate\Contracts\Validation\Rule. Array shape:
      * array<array{
      *      0: string|array<string>,

@@ -17,7 +17,7 @@ incorrecto proporcionado al URL o nombre de ruta establecido utilizando el
 método de petición dado, y afirmando que el mensaje de validación fallida 
 esperado es recibido de vuelta. No es necesario proporcionar el mensaje de 
 error. Si desea saber de manera breve como funciona el código, vaya a la 
-sección titulada 'Código en breve'.
+sección titulada ‘Código en breve’.
 
 ## Instalación
 
@@ -119,7 +119,7 @@ class RoutesValidationTest extends TestCase {
 /**
  *                      regex debe ser encapsulada en un arreglo debido a la 
  *                      pipa |, ya que de otra forma seria confundida con una 
- *                      regla compuesta (ejemplo 'numeric|max:100').                      
+ *                      regla compuesta (ejemplo ‘numeric|max:100’).                      
 */
                         ['regex:/^[a-z]([a-z0-9]|[a-z0-9]\.[a-z0-9])*$/i']
                     ],
@@ -141,7 +141,7 @@ puede ser traducida del ingles al español de la siguiente forma:
 
 ```php
     /**
-     * @param array<array> $list Lista compuesta por arreglos en la que se 
+     * @param array<array> \$list Lista compuesta por arreglos en la que se 
      * emparejan reglas de validación con ejemplos de datos inválidos para las 
      * mismas. Estos arreglos deben tener tres llaves enteras: 0 para los/el 
      * nombre(s) de campo, 1 para los/el ejemplo(s) de valor invalido y 2 la 
@@ -150,7 +150,7 @@ puede ser traducida del ingles al español de la siguiente forma:
      * respectivamente, para ello basta con anidarlos dentro de un arreglo. Los 
      * nombres de campo deben ser siempre de tipo cadena. Reglas compuestas 
      * pueden entregarse en una cadena separada por pipas (ejemplo 
-     * 'numeric|max:100') o en un arreglo (ejemplo ['numeric', 'max:100']). 
+     * ‘numeric|max:100’) o en un arreglo (ejemplo [‘numeric’, ‘max:100’]). 
      * Las reglas sólo podrán ser de tipo cadena o instancias de Illuminate\
      * Contracts\Validation\Rule. El formato de arreglo es el siguiente: 
      * array<array{ 
