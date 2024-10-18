@@ -182,6 +182,10 @@ class ValidationAssertionsTest extends TestCase {
                 ],
                 requestMethod: 'delete'
         );
+
+        $this->assertValidationRulesAreImplementedInUrl($this->exampleUrl,
+                [['username_field', '', 'required']], 'patch',
+                $this->exampleErrorBagName);
     }
 
     #[Test]
@@ -194,6 +198,11 @@ class ValidationAssertionsTest extends TestCase {
                 ],
                 requestMethod: 'delete'
         );
+
+        $this->assertValidationRulesAreImplementedInRouteName(
+                $this->exampleRouteName,
+                [['username_field', '', 'required']], 'patch',
+                $this->exampleErrorBagName);
     }
 
     #[Test]
