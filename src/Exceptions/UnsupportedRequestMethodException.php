@@ -6,6 +6,7 @@ use Arielenter\Validation\Constants\SupportedRequestMethods;
 use Arielenter\Validation\Constants\TransPrefix;
 use ValueError;
 use function __;
+use function json_encode;
 
 class UnsupportedRequestMethodException extends ValueError {
 

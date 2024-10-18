@@ -17,6 +17,7 @@ use PHPUnit\Framework\AssertionFailedError;
 use TypeError;
 use function __;
 use function validator;
+use function json_encode;
 
 trait ValidationAssertionsTestHelpers {
 

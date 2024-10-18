@@ -5,6 +5,7 @@ namespace Arielenter\Validation\Exceptions;
 use ArgumentCountError;
 use Arielenter\Validation\Constants\TransPrefix;
 use function __;
+use function json_encode;
 
 class RowHasAMissingKeyException extends ArgumentCountError {
 

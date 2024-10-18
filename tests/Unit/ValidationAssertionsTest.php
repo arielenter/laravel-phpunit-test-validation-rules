@@ -13,6 +13,7 @@ use Arielenter\ValidationAssertions\Tests\TestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Session;
 use PHPUnit\Framework\Attributes\Test;
+use function json_encode;
 
 class ValidationAssertionsTest extends TestCase {
 

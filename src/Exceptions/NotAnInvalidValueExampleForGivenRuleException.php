@@ -5,6 +5,7 @@ namespace Arielenter\Validation\Exceptions;
 use Arielenter\Validation\Constants\TransPrefix;
 use ValueError;
 use function __;
+use function json_encode;
 
 class NotAnInvalidValueExampleForGivenRuleException extends ValueError {
     

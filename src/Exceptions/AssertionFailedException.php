@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Session;
 use Orchestra\Testbench\TestCase as OrechestraTestCase;
 use PHPUnit\Framework\AssertionFailedError;
 use function __;
+use function json_encode;
 
 class AssertionFailedException extends AssertionFailedError {
 

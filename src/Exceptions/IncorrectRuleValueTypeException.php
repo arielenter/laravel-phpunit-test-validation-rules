@@ -7,6 +7,7 @@ use Arielenter\Validation\Constants\TransPrefix;
 use Illuminate\Contracts\Validation\Rule;
 use TypeError;
 use function __;
+use function json_encode;
 
 class IncorrectRuleValueTypeException extends TypeError {
 

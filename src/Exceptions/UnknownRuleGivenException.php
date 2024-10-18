@@ -8,6 +8,7 @@ use Illuminate\Contracts\Validation\Rule;
 use ValueError;
 use function __;
 use function validator;
+use function json_encode;
 
 class UnknownRuleGivenException extends ValueError {
     
