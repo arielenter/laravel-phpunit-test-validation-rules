@@ -2,6 +2,7 @@
 
 namespace Arielenter\ValidationAssertions\Tests\Support;
 
+use Arielenter\Validation\Constants\TransPrefix;
 use Arielenter\Validation\Exceptions\IncorrectObjectRuleException;
 use Arielenter\Validation\Exceptions\IncorrectRuleValueTypeException;
 use Arielenter\Validation\Exceptions\RowHasAMissingKeyException;
@@ -19,43 +20,62 @@ use function validator;
 
 trait ValidationAssertionsTestHelpers {
 
-    use TransAssertions;
+    use TransAssertions,
+        TransPrefix;
 
     public string $regexRule = 'regex:/^[a-z]([a-z0-9]|[a-z0-9]\.[a-z0-9])*$/i';
     public string $exampleUrl = '/example-url';
     public string $exampleRouteName = 'example_route_name';
     public string $exampleErrorBagName = 'example_error_bag';
-    public string $transPrefix = 'arielenter_validation_assertions::errors';
-    public string $testTransPrefix = 'arielenter_validation_assertions_test::'
-            . 'errors';
     public Rule $passowrdRuleInstance;
+    public array $exampleValidationRules;
 
     public function setUp(): void {
         parent::setUp();
 
-        $regexRule = $this->regexRule;
         $this->passowrdRuleInstance = Password::min(6);
-        $validationRules = [
-            'username_field' => ['required', 'string', 'min:6', $regexRule],
-            'email_field' => 'email|min:6',
-            'password_field' => [$this->passowrdRuleInstance],
-            'same_regex_field' => [$regexRule],
-        ];
+        
+        Route::getRoutes()->add(Route::patch($this->exampleUrl,
+                        fn(Request $request) => $request->validateWithBag(
+                                $this->exampleErrorBagName,
+                                ['username_field' => 'required'])));
 
-        $callable = fn(Request $request) => $request->validate(
-                        $validationRules);
-
-        Route::getRoutes()->add(Route::post($this->exampleUrl, $callable)
-                        ->name($this->exampleRouteName));
+        Route::getRoutes()->add(
+                Route::post(
+                        $this->exampleUrl,
+                        fn(Request $request) => $request->validate(
+                                $this->getExampleValidationRules()
+                        )
+                )->name($this->exampleRouteName)
+        );
 
         Route::getRoutes()->add(Route::delete($this->exampleUrl,
                         fn(Request $request) => $request->validate(
                                 ['user_id_field' => 'numeric|max:100'])));
 
-        Route::getRoutes()->add(Route::patch($this->exampleUrl,
-                        fn(Request $request) => $request->validateWithBag(
-                                $this->exampleErrorBagName,
-                                ['username_field' => 'required'])));
+        Route::getRoutes()->add(Route::put($this->exampleUrl,
+                        fn(Request $request) => $this->putCallable($request)));
+    }
+
+    public function getExampleValidationRules() {
+        $regexRule = $this->regexRule;
+
+        return [
+            'username_field' => ['required', 'string', 'min:6', $regexRule],
+            'email_field' => 'email|min:6',
+            'password_field' => [$this->passowrdRuleInstance],
+            'same_regex_field' => [$regexRule],
+        ];
+    }
+
+    public function putCallable(Request $request) {
+        $headers = $request->headers->all();
+        if (array_key_exists('example', $headers)) {
+            $request->validate(['field' => 'required']);
+        }
+        
+        throw new \Exception('Header ‘example’ was not present on the '
+                . 'request.');
     }
 
     public function checkValidationAssertionThrowsExpectedError(
@@ -63,20 +83,25 @@ trait ValidationAssertionsTestHelpers {
             string $field,
             mixed $invalidValueExample,
             string|Rule $validationRule,
-            string $assertSessionHasErrorsInFail = null
+            ?string $assertSessionHasErrorsInFailMsg = null,
+            string $requestMethod = 'post',
+            array $headers = [],
+            string $errorBag = 'default'
     ): void {
         $transReplace = $this->getTransReplace($url, $field,
                 $invalidValueExample, $validationRule,
-                $assertSessionHasErrorsInFail);
+                $assertSessionHasErrorsInFailMsg, $requestMethod, $headers,
+                $errorBag);
 
-        $expectedError = $this->tryGetTrans("{$this->transPrefix}"
-                . ".validation_assertion_failed", $transReplace);
+        $expectedError = $this->tryGetTrans($this::TRANS_PREFIX
+                . "validation_assertion_failed", $transReplace);
 
         try {
             $this->assertThrows(
                     fn() => $this->assertValidationRuleIsImplementedInUrl(
                             $url, $field, $invalidValueExample,
-                            $validationRule),
+                            $validationRule, $requestMethod, $errorBag,
+                            $headers),
                     AssertionFailedError::class, $expectedError
             );
         } catch (AssertionFailedError $e) {
@@ -93,9 +118,10 @@ trait ValidationAssertionsTestHelpers {
             string $field,
             mixed $invalidValueExample,
             string|Rule $validationRule,
-            string $assertSessionHasErrorsInFail = null,
+            ?string $assertSessionHasErrorsInFail = null,
             string $requestMethod = 'post',
-            string $errorBag = 'default'
+            array $headers = [],
+            string $errorBag = 'default',
     ): array {
         $data = [$field => $invalidValueExample];
         $fieldRule = [$field => $validationRule];
@@ -111,8 +137,18 @@ trait ValidationAssertionsTestHelpers {
             'data' => json_encode($data),
             'rule' => json_encode($fieldRule),
             'expected_validation_error' => $validationErrMsg,
-            'assert_session_has_errors_in_fail' => $assertSessionHasErrorsInFail
+            'assert_session_has_errors_in_fail' =>
+            $assertSessionHasErrorsInFail,
+            'with_headers' => $this->getWithHeaders($headers)
         ];
+    }
+
+    public function getWithHeaders(array $headers) {
+        if (empty($headers)) {
+            return '';
+        }
+        return $this->tryGetTrans($this::TRANS_PREFIX . 'with_headers',
+                        ['headers' => json_encode($headers)]);
     }
 
     public function throwNotExpectedErrorReceived(
@@ -158,7 +194,7 @@ trait ValidationAssertionsTestHelpers {
             mixed $invalidValueFromRule,
             string $correctTypes
     ) {
-        $transKey = "{$this->transPrefix}.incorrect_rule_value_type";
+        $transKey = $this::TRANS_PREFIX . "incorrect_rule_value_type";
         $replace = [
             'rule' => json_encode($rule),
             'value' => json_encode($invalidValueFromRule),
@@ -188,7 +224,7 @@ trait ValidationAssertionsTestHelpers {
     public function getIncorrectRuleInstanceError(
             object $invalidComposedRuleValue
     ) {
-        $transKey = "{$this->transPrefix}.incorrect_object_rule";
+        $transKey = $this::TRANS_PREFIX . "incorrect_object_rule";
         $replace = [
             'rule' => get_class($invalidComposedRuleValue),
             'classes' => Rule::class
@@ -205,7 +241,7 @@ trait ValidationAssertionsTestHelpers {
 
         $replace = $this->getTransReplace($this->exampleUrl, $a2, $a3, $a4);
 
-        $expectedErrorMsg = $this->tryGetTrans("{$this->transPrefix}."
+        $expectedErrorMsg = $this->tryGetTrans($this::TRANS_PREFIX
                 . "validation_assertion_failed", $replace);
 
         $this->assertThrows(
@@ -255,7 +291,7 @@ trait ValidationAssertionsTestHelpers {
     public function invalidRowShapeExample1(): array {
         $listExample = ['this row', 'should had been', 'nested'];
 
-        $transKey = "{$this->transPrefix}.row_should_had_been_a_nested_"
+        $transKey = $this::TRANS_PREFIX . "row_should_had_been_a_nested_"
                 . "array";
 
         $replace = [
@@ -284,7 +320,7 @@ trait ValidationAssertionsTestHelpers {
     missingIntKeyRowExample(array $exampleRow, int $missingIntKey): array {
         $listExample = [$exampleRow];
 
-        $transKey = "{$this->transPrefix}.row_has_a_missing_key";
+        $transKey = $this::TRANS_PREFIX . "row_has_a_missing_key";
 
         $replace = $replace = [
             'row_key' => 0,
@@ -335,7 +371,7 @@ trait ValidationAssertionsTestHelpers {
         $row = $listExample[0];
         $fieldName = $listExample[0][0];
 
-        $transKey = "{$this->transPrefix}.wrong_field_name_value_type";
+        $transKey = $this::TRANS_PREFIX . "wrong_field_name_value_type";
 
         $replace = [
             'row_key' => 0,

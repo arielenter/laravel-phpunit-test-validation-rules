@@ -6,12 +6,15 @@ return [
     . 'validation rule. Data :data Rule: :rule',
     
     'validation_assertion_failed' => 'Fail asserting that submitting the '
-    . 'following data to ‘:url’ using the method ‘:method’ returnes back the '
-    . 'expected error inside the error bag ‘:error_bag’.\n'
-    . 'Data: :data\n'
-    . 'Rule being tested: :rule\n'
-    . 'Expected Validation Error: :expected_validation_error\n'
+    . 'following data to ‘:url’ using the method ‘:method’:with_headers '
+    . 'returnes back the expected error inside the error bag '
+    . '‘:error_bag’.' . "\n"
+    . 'Data: :data' . "\n"
+    . 'Rule being tested: :rule' . "\n"
+    . 'Expected Validation Error: :expected_validation_error' . "\n"
     . 'assertSessionHasErrorsIn Said: :assert_session_has_errors_in_fail',
+    
+    'with_headers' => ' with headers ‘:headers’',
     
     'row_should_had_been_a_nested_array' => 'The row of the list with key '
     . '‘:key’ and value :value is not an array but a ‘:type’. All items of the '

@@ -8,12 +8,14 @@ return [
     
     'validation_assertion_failed' => 'No fue posible afirmar que enviando la '
     . 'siguiente información a ‘:url’ utilizando el método de petición '
-    . '‘:method’ regreso de vuelta el error esperado dentro de la bolsa de '
-    . 'error ‘:error_bag’.\n'
-    . 'Información enviada: :data\n'
-    . 'Regla por comprobar: :rule\n'
-    . 'Error esperado: :expected_validation_error\n'
+    . '‘:method’:with_headers regreso de vuelta el error esperado dentro de la '
+    . 'bolsa de error ‘:error_bag’.' . "\n"
+    . 'Información enviada: :data' . "\n"
+    . 'Regla por comprobar: :rule' . "\n"
+    . 'Error esperado: :expected_validation_error' . "\n"
     . 'assertSessionHasErrorsIn dice: :assert_session_has_errors_in_fail',
+    
+    'with_headers' => ' con los encabezados siguientes ‘:headers’',
     
     'row_should_had_been_a_nested_array' => 'La fila de la lista con la llave '
     . '‘:key’ y con valor :value no es de tipo arreglo si no tipo ‘:type’. '

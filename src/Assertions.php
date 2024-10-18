@@ -32,7 +32,8 @@ trait Assertions {
             mixed $invalidValueExample,
             string|Rule|array $validationRule,
             string $requestMethod = 'post',
-            string $errorBag = 'default'
+            string $errorBag = 'default',
+            array $headers =[]
     ): void {
         $validatedRequestMethod = UnsupportedRequestMethodException::
                 validateRequestMethod($requestMethod);
@@ -48,16 +49,10 @@ trait Assertions {
                         $fieldValidationRule, $validationRule);
 
         AssertionFailedException::
-        trySubmitInvalidDataExampleToUrlAndAssertItReturnsExpectedErrMsg(
-                $this,
-                $url,
-                $invalidDataExample,
-                $fieldName,
-                $fieldValidationRule,
-                $expectedErrorMessage,
-                $validatedRequestMethod,
-                $errorBag
-        );
+        trySubmitInvalidDataExampleToUrlAndAssertItReturnsExpectedErrMsg($this,
+                $url, $invalidDataExample, $fieldName, $fieldValidationRule,
+                $expectedErrorMessage, $validatedRequestMethod, $errorBag,
+                $headers);
     }
 
     public function assertValidationRuleIsImplementedInRouteName(
@@ -66,7 +61,8 @@ trait Assertions {
             mixed $invalidValueExample,
             string|Rule|array $validationRule,
             string $requestMethod = 'post',
-            string $errorBag = 'default'
+            string $errorBag = 'default',
+            array $headers = []
     ): void {
         $this->assertValidationRuleIsImplementedInUrl(
                 route($routeName),
@@ -74,20 +70,21 @@ trait Assertions {
                 $invalidValueExample,
                 $validationRule,
                 $requestMethod,
-                $errorBag
+                $errorBag,
+                $headers
         );
     }
 
     /**
-     * @param array<array> $list List of arrays where validation rules are 
+     * @param array<array> \$list List of arrays where validation rules are 
      * paired with invalid data examples for them. This nested arrays must have 
      * the following 3 keys: 0 for Field(s), 1 for Invalid Value Example(s) and 
      * lastly 2 for the Validation Rule desired to be tested. Key 0 and 1 can 
      * have multiple field names and invalid value examples respectively by 
      * nesting them inside an array. Field names must always be string values.
      * Composed validation rules can be given either as a pipe | delimited 
-     * string (example 'numeric|max:100') or an array (example 
-     * ['numeric', 'max:100']). Rules can only be string values or instances
+     * string (example ‘numeric|max:100’) or an array (example 
+     * [‘numeric’, ‘max:100’]). Rules can only be string values or instances
      * of Illuminate\Contracts\Validation\Rule. Array shape:
      * array<array{
      *      0: string|array<string>,
@@ -101,7 +98,9 @@ trait Assertions {
             string $url,
             array $list,
             string $requestMethod = 'post',
-            string $errorBag = 'default'
+            string $errorBag = 'default',
+            array $headers = []
+            
     ): void {
         foreach ($list as $currentRowKey => $currentRow) {
             RowShouldHadBeenANestedArrayException::validateCurrentRowIsArray(
@@ -128,7 +127,7 @@ trait Assertions {
                 foreach ($invalidValueExamples as $invalidValueExample) {
                     $this->assertValidationRuleIsImplementedInUrl($url, 
                             $fieldName, $invalidValueExample, $validationRule, 
-                            $requestMethod, $errorBag);
+                            $requestMethod, $errorBag, $headers);
                 }
             }
         }
@@ -144,9 +143,10 @@ trait Assertions {
             string $routeName,
             array $list,
             string $requestMethod = 'post',
-            string $errorBag = 'default'
+            string $errorBag = 'default',
+            array $headers = []
     ): void {
         $this->assertValidationRulesAreImplementedInUrl(
-                route($routeName), $list, $requestMethod, $errorBag);
+                route($routeName), $list, $requestMethod, $errorBag, $headers);
     }
 }

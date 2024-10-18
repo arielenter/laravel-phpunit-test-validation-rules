@@ -3,6 +3,7 @@
 namespace Arielenter\ValidationAssertions\Tests\Unit;
 
 use Arielenter\Validation\Assertions as ValidationAssertions;
+use Arielenter\Validation\Constants\SupportedRequestMethods;
 use Arielenter\Validation\Exceptions\NotAnInvalidValueExampleForGivenRuleException;
 use Arielenter\Validation\Exceptions\UnknownRuleGivenException;
 use Arielenter\Validation\Exceptions\UnsupportedRequestMethodException;
@@ -17,7 +18,11 @@ class ValidationAssertionsTest extends TestCase {
 
     use ValidationAssertions,
         TransAssertions,
-        ValidationAssertionsTestHelpers;
+        ValidationAssertionsTestHelpers,
+        SupportedRequestMethods;
+
+    public string $missingErrorKeyMsg = "Session is missing expected key "
+            . "[errors].\nFailed asserting that false is true.";
 
     #[Test]
     public function will_pass_if_validation_is_implemented_in_url(): void {
@@ -71,11 +76,8 @@ class ValidationAssertionsTest extends TestCase {
         $this->checkValidationAssertionThrowsExpectedError($this->exampleUrl,
                 'non_implemented_field', '', 'required');
 
-        $a5 = "Session is missing expected key [errors].\n"
-                . "Failed asserting that false is true.";
-
         $this->checkValidationAssertionThrowsExpectedError('/nonexistent-url',
-                'username_field', '', 'required', $a5);
+                'username_field', '', 'required', $this->missingErrorKeyMsg);
     }
 
     #[Test]
@@ -126,7 +128,7 @@ class ValidationAssertionsTest extends TestCase {
                 fn() => $this->assertValidationRuleIsImplementedInUrl($a1,
                         $a2, $a3, $a4),
                 NotAnInvalidValueExampleForGivenRuleException::class,
-                $this->tryGetTrans("{$this->transPrefix}.not_invalid_data",
+                $this->tryGetTrans($this::TRANS_PREFIX . "not_invalid_data",
                         $replace)
         );
     }
@@ -136,19 +138,16 @@ class ValidationAssertionsTest extends TestCase {
         [$a1, $a2, $a3, $a4, $a5] = [$this->exampleUrl, 'user_id_field',
             'not a number', 'numeric', 'unsupported method'];
 
-        $supportedMethods = ['get', 'post', 'put', 'patch', 'delete',
-            'options'];
-
         $replace = [
             'method' => $a5,
-            'supported_methods' => json_encode($supportedMethods)
+            'supported_methods' => json_encode($this::SUPPORTED_METHODS)
         ];
 
         $this->assertThrows(
                 fn() => $this->assertValidationRuleIsImplementedInUrl($a1,
                         $a2, $a3, $a4, $a5),
                 UnsupportedRequestMethodException::class,
-                $this->tryGetTrans("{$this->transPrefix}.unsupported_request_"
+                $this->tryGetTrans($this::TRANS_PREFIX . "unsupported_request_"
                         . "method", $replace)
         );
     }
@@ -168,7 +167,7 @@ class ValidationAssertionsTest extends TestCase {
                 fn() => $this->assertValidationRuleIsImplementedInUrl($a1,
                         $a2, $a3, $a4),
                 UnknownRuleGivenException::class,
-                $this->tryGetTrans("{$this->transPrefix}.unknown_rule_given",
+                $this->tryGetTrans($this::TRANS_PREFIX . "unknown_rule_given",
                         $replace)
         );
     }
@@ -281,8 +280,30 @@ class ValidationAssertionsTest extends TestCase {
         }
     }
 
-//    #[Test]
-//    public function example(): void {
-//        $this->assertValidationRulesAreImplementedInUrl('ejem', [[(object) 'an_object_field_name?', '', 'required']]);
-//    }
+    #[Test]
+    public function headers_can_also_be_send_as_part_of_the_assertions(): void {
+        $exampleUrl = $this->exampleUrl;
+        $exampleRoute = $this->exampleRouteName;
+        [$field, $invalidVal, $rule, $method] = ['field', '', 'required',
+            'put', ['example' => 'header']];
+        $exampleHeaders = ['example' => 'header'];
+
+        $this->assertValidationRuleIsImplementedInUrl($exampleUrl, $field,
+                $invalidVal, $rule, $method, headers: $exampleHeaders);
+
+        $this->assertValidationRuleIsImplementedInRouteName($exampleRoute,
+                $field, '', 'required', $method, headers: $exampleHeaders);
+
+        $list = [[$field, $invalidVal, $rule]];
+
+        $this->assertValidationRulesAreImplementedInUrl($exampleUrl, $list,
+                $method, headers: $exampleHeaders);
+
+        $this->assertValidationRulesAreImplementedInRouteName($exampleRoute,
+                $list, $method, headers: $exampleHeaders);
+
+        $this->checkValidationAssertionThrowsExpectedError($exampleUrl, $field,
+                'not a number', 'numeric', $this->missingErrorKeyMsg, $method,
+                $exampleHeaders);
+    }
 }
