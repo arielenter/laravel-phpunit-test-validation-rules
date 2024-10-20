@@ -35,7 +35,7 @@ trait ValidationAssertionsTestHelpers {
         parent::setUp();
 
         $this->passowrdRuleInstance = Password::min(6);
-        
+
         Route::getRoutes()->add(Route::patch($this->exampleUrl,
                         fn(Request $request) => $request->validateWithBag(
                                 $this->exampleErrorBagName,
@@ -49,6 +49,10 @@ trait ValidationAssertionsTestHelpers {
                         )
                 )->name($this->exampleRouteName)
         );
+
+        Route::getRoutes()->add(Route::get($this->exampleUrl,
+                        fn(Request $request) => $request->validate(
+                                ['user_id_field' => 'numeric'])));
 
         Route::getRoutes()->add(Route::delete($this->exampleUrl,
                         fn(Request $request) => $request->validate(
@@ -74,9 +78,9 @@ trait ValidationAssertionsTestHelpers {
         if (array_key_exists('example', $headers)) {
             $request->validate(['field' => 'required']);
         }
-        
+
         throw new \Exception('Header ‘example’ was not present on the '
-                . 'request.');
+                        . 'request.');
     }
 
     public function checkValidationAssertionThrowsExpectedError(

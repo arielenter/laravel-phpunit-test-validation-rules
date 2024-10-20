@@ -12,6 +12,7 @@ use Arielenter\ValidationAssertions\Tests\Support\ValidationAssertionsTestHelper
 use Arielenter\ValidationAssertions\Tests\TestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
 use PHPUnit\Framework\Attributes\Test;
 use function json_encode;
 
@@ -151,6 +152,12 @@ class ValidationAssertionsTest extends TestCase {
                 $this->tryGetTrans($this::TRANS_PREFIX . "unsupported_request_"
                         . "method", $replace)
         );
+    }
+    
+    #[Test]
+    public function get_request_method_can_be_used(): void {
+        $this->assertValidationRuleIsImplementedInUrl($this->exampleUrl,
+                'user_id_field', 'not a number', 'numeric', 'get');
     }
 
     #[Test]

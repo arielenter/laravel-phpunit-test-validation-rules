@@ -5,6 +5,7 @@ namespace Arielenter\Validation\Exceptions;
 use Arielenter\Validation\Constants\TransPrefix;
 use Illuminate\Foundation\Testing\TestCase;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
 use Orchestra\Testbench\TestCase as OrechestraTestCase;
 use PHPUnit\Framework\AssertionFailedError;
 use function __;
@@ -59,9 +60,15 @@ class AssertionFailedException extends AssertionFailedError {
             array $headers
     ) {
         try {
-            $testCase->$requestMethod($url, $invalidDataExample, $headers)
-                    ->assertSessionHasErrorsIn($errorBag,
-                            [$fieldName => $expectedErrorMessage]);
+            if ($requestMethod == 'get') {
+                $urlWithParam = URL::query($url, $invalidDataExample);
+                $response = $testCase->$requestMethod($urlWithParam, $headers);
+            } else {
+                $response = $testCase
+                        ->$requestMethod($url, $invalidDataExample, $headers);
+            }
+            $response->assertSessionHasErrorsIn($errorBag, [$fieldName =>
+                $expectedErrorMessage]);
         } catch (AssertionFailedError $e) {
             throw new self($url, $invalidDataExample, $fieldValidationRule,
                             $expectedErrorMessage, $requestMethod, $errorBag,
