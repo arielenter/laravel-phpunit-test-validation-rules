@@ -4,9 +4,9 @@ namespace Arielenter\Validation\Exceptions;
 
 use Arielenter\Validation\Constants\SupportedRequestMethods;
 use Arielenter\Validation\Constants\TransPrefix;
+use Illuminate\Support\Str;
 use ValueError;
 use function __;
-use function json_encode;
 
 class UnsupportedRequestMethodException extends ValueError {
 
@@ -27,10 +27,11 @@ class UnsupportedRequestMethodException extends ValueError {
 
     public static function validateRequestMethod(string $requestMethod)
     : string {
-        $requestMethodLowerCase = strtolower($requestMethod);
+        $method = Str::of($requestMethod)->camel()->lower()->replace('j', 'J')
+                ->toString() ;
 
-        if (in_array($requestMethodLowerCase, self::SUPPORTED_METHODS)) {
-            return $requestMethodLowerCase;
+        if (in_array($method, self::SUPPORTED_METHODS)) {
+            return $method;
         }
 
         throw new self($requestMethod);

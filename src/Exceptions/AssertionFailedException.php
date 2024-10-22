@@ -6,6 +6,8 @@ use Arielenter\Validation\Constants\TransPrefix;
 use Illuminate\Foundation\Testing\TestCase;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
+use Illuminate\Testing\TestResponse;
 use Orchestra\Testbench\TestCase as OrechestraTestCase;
 use PHPUnit\Framework\AssertionFailedError;
 use function __;
@@ -39,7 +41,7 @@ class AssertionFailedException extends AssertionFailedError {
                     'data' => json_encode($invalidDataExample),
                     'rule' => json_encode($fieldValidationRule),
                     'expected_validation_error' => $expectedErrorMessage,
-                    'assert_session_has_errors_in_fail' => $errorMsg,
+                    'assert_invalid_fail_msg' => $errorMsg,
                     'with_headers' => $withHeaders
                 ]
         );
@@ -57,18 +59,19 @@ class AssertionFailedException extends AssertionFailedError {
             string $expectedErrorMessage,
             string $requestMethod,
             string $errorBag,
-            array $headers
-    ) {
+            array $headers,
+            int $options
+    ): void {
         try {
-            if ($requestMethod == 'get') {
-                $urlWithParam = URL::query($url, $invalidDataExample);
-                $response = $testCase->$requestMethod($urlWithParam, $headers);
+            if (in_array($requestMethod, ['get', 'getJson'])) {
+                $response = self::getMethod($testCase, $requestMethod, $url, 
+                        $invalidDataExample, $headers, $options);
             } else {
-                $response = $testCase
-                        ->$requestMethod($url, $invalidDataExample, $headers);
+                $response = self::allOtherMethods($testCase, $requestMethod, 
+                        $url, $invalidDataExample, $headers, $options);
             }
-            $response->assertSessionHasErrorsIn($errorBag, [$fieldName =>
-                $expectedErrorMessage]);
+            $response->assertInvalid([$fieldName => $expectedErrorMessage],
+                    $errorBag);
         } catch (AssertionFailedError $e) {
             throw new self($url, $invalidDataExample, $fieldValidationRule,
                             $expectedErrorMessage, $requestMethod, $errorBag,
@@ -76,5 +79,35 @@ class AssertionFailedException extends AssertionFailedError {
         } finally {
             Session::flush();
         }
+    }
+
+    private static function getMethod(
+            OrechestraTestCase|TestCase $testCase,
+            string $method,
+            string $url,
+            array $invalidDataExample,
+            array $headers,
+            int $options
+    ): TestResponse {
+        $urlWithParam = URL::query($url, $invalidDataExample);
+        if (Str::endsWith($method, 'Json')) {
+            return $testCase->$method($urlWithParam, $headers, $options);
+        }
+        return $testCase->$method($urlWithParam, $headers);
+    }
+
+    private static function allOtherMethods(
+            OrechestraTestCase|TestCase $testCase,
+            string $method,
+            string $url,
+            array $invalidDataExample,
+            array $headers,
+            int $options
+    ): TestResponse {
+        if (Str::endsWith($method, 'Json')) {
+            return $testCase->$method($url, $invalidDataExample, $headers, 
+                    $options);
+        }
+        return $testCase->$method($url, $invalidDataExample, $headers);
     }
 }

@@ -12,7 +12,7 @@ return [
     . 'Data: :data' . "\n"
     . 'Rule being tested: :rule' . "\n"
     . 'Expected Validation Error: :expected_validation_error' . "\n"
-    . 'assertSessionHasErrorsIn Said: :assert_session_has_errors_in_fail',
+    . 'assertInvalid Said: :assert_invalid_fail_msg',
     
     'with_headers' => ' with headers ‘:headers’',
     

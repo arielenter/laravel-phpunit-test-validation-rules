@@ -9,6 +9,7 @@ use Arielenter\Validation\Exceptions\RowHasAMissingKeyException;
 use Arielenter\Validation\Exceptions\RowShouldHadBeenANestedArrayException;
 use Arielenter\Validation\Exceptions\WrongFieldNameValueTypeException;
 use Arielenter\ValidationAssertions\Tests\Support\TransAssertions;
+use Exception;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -16,8 +17,9 @@ use Illuminate\Validation\Rules\Password;
 use PHPUnit\Framework\AssertionFailedError;
 use TypeError;
 use function __;
-use function validator;
+use function dd;
 use function json_encode;
+use function validator;
 
 trait ValidationAssertionsTestHelpers {
 
@@ -45,8 +47,7 @@ trait ValidationAssertionsTestHelpers {
                 Route::post(
                         $this->exampleUrl,
                         fn(Request $request) => $request->validate(
-                                $this->getExampleValidationRules()
-                        )
+                                $this->getExampleValidationRules())
                 )->name($this->exampleRouteName)
         );
 
@@ -60,9 +61,12 @@ trait ValidationAssertionsTestHelpers {
 
         Route::getRoutes()->add(Route::put($this->exampleUrl,
                         fn(Request $request) => $this->putCallable($request)));
+
+        Route::getRoutes()->add(Route::options($this->exampleUrl,
+                        fn(Request $request) => $this->optionsCall($request)));
     }
 
-    public function getExampleValidationRules() {
+    public function getExampleValidationRules(): array {
         $regexRule = $this->regexRule;
 
         return [
@@ -73,13 +77,35 @@ trait ValidationAssertionsTestHelpers {
         ];
     }
 
-    public function putCallable(Request $request) {
+    public function optionsCall(Request $request): void {
+        if ($request->wantsJson()) {
+            $expectedContent = json_encode(
+                    ['json_field' => $request->get('json_field')],
+                    JSON_HEX_TAG
+            );
+            $actualContent = $request->getContent();
+            if ($actualContent == $expectedContent) {
+                $request->validate(['json_field' => 'numeric']);
+            }
+
+            $errorMsg = __('Request content doesn’t match what was expected. '
+                    . 'Expected is ‘:expected’ but ‘:actual’ was received '
+                    . 'instead.',
+                    ['expected' => $expectedContent,
+                        'actual' => $actualContent]);
+            throw new Exception($errorMsg);
+        }
+        throw new Exception('A Json Phpunit’s request method was expected to '
+                        . 'be used.');
+    }
+
+    public function putCallable(Request $request): void {
         $headers = $request->headers->all();
         if (array_key_exists('example', $headers)) {
             $request->validate(['field' => 'required']);
         }
 
-        throw new \Exception('Header ‘example’ was not present on the '
+        throw new Exception('Header ‘example’ was not present on the '
                         . 'request.');
     }
 
@@ -88,14 +114,14 @@ trait ValidationAssertionsTestHelpers {
             string $field,
             mixed $invalidValueExample,
             string|Rule $validationRule,
-            ?string $assertSessionHasErrorsInFailMsg = null,
+            ?string $assertInvalidFailMsg = null,
             string $requestMethod = 'post',
             array $headers = [],
             string $errorBag = 'default'
     ): void {
         $transReplace = $this->getTransReplace($url, $field,
                 $invalidValueExample, $validationRule,
-                $assertSessionHasErrorsInFailMsg, $requestMethod, $headers,
+                $assertInvalidFailMsg, $requestMethod, $headers,
                 $errorBag);
 
         $expectedError = $this->tryGetTrans($this::TRANS_PREFIX
@@ -123,7 +149,7 @@ trait ValidationAssertionsTestHelpers {
             string $field,
             mixed $invalidValueExample,
             string|Rule $validationRule,
-            ?string $assertSessionHasErrorsInFail = null,
+            ?string $assertInvalidFailMsg = null,
             string $requestMethod = 'post',
             array $headers = [],
             string $errorBag = 'default',
@@ -132,8 +158,8 @@ trait ValidationAssertionsTestHelpers {
         $fieldRule = [$field => $validationRule];
         $validationErrMsg = validator($data, $fieldRule)->messages()->first();
 
-        $assertSessionHasErrorsInFail ??= "Failed asserting that an array "
-                . "contains '{$validationErrMsg}'";
+        $assertInvalidFailMsg ??= "Failed to find a validation error for key "
+                . "and message: '{$field}' => '{$validationErrMsg}'";
 
         return [
             'url' => $url,
@@ -142,8 +168,8 @@ trait ValidationAssertionsTestHelpers {
             'data' => json_encode($data),
             'rule' => json_encode($fieldRule),
             'expected_validation_error' => $validationErrMsg,
-            'assert_session_has_errors_in_fail' =>
-            $assertSessionHasErrorsInFail,
+            'assert_invalid_fail_msg' =>
+            $assertInvalidFailMsg,
             'with_headers' => $this->getWithHeaders($headers)
         ];
     }
@@ -240,11 +266,13 @@ trait ValidationAssertionsTestHelpers {
 
     public function checkValidationAssertionFailsFromTheExpectedListRow(
             array $validationList,
-            int $keyOfRowExpectedToFailAssertion
+            int $keyOfRowExpectedToFailAssertion,
+            ?string $assertInvalidFailMsg = null
     ): void {
         [$a2, $a3, $a4] = $validationList[$keyOfRowExpectedToFailAssertion];
 
-        $replace = $this->getTransReplace($this->exampleUrl, $a2, $a3, $a4);
+        $replace = $this->getTransReplace($this->exampleUrl, $a2, $a3, $a4,
+                $assertInvalidFailMsg);
 
         $expectedErrorMsg = $this->tryGetTrans($this::TRANS_PREFIX
                 . "validation_assertion_failed", $replace);

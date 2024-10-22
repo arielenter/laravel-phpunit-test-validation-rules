@@ -12,8 +12,8 @@ use Arielenter\ValidationAssertions\Tests\Support\ValidationAssertionsTestHelper
 use Arielenter\ValidationAssertions\Tests\TestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\URL;
 use PHPUnit\Framework\Attributes\Test;
+use function __;
 use function json_encode;
 
 class ValidationAssertionsTest extends TestCase {
@@ -23,8 +23,12 @@ class ValidationAssertionsTest extends TestCase {
         ValidationAssertionsTestHelpers,
         SupportedRequestMethods;
 
-    public string $missingErrorKeyMsg = "Session is missing expected key "
-            . "[errors].\nFailed asserting that false is true.";
+    public string $sessionMissingErrorKey = "Session is missing expected key "
+            . "[errors].";
+    public string $sessionMissingFieldKey = "Failed to find a validation error "
+            . "in session for key: ':field'";
+    public string $responseMissingFieldKey = "Failed to find a validation "
+            . "error in the response for key: ':field'";
 
     #[Test]
     public function will_pass_if_validation_is_implemented_in_url(): void {
@@ -75,11 +79,16 @@ class ValidationAssertionsTest extends TestCase {
                 'username_field', 'confirmed is not implemented for username',
                 'confirmed');
 
+        $assertInvalidFailMsg = __($this->sessionMissingFieldKey,
+                ['field' => 'non_implemented_field']);
+
         $this->checkValidationAssertionThrowsExpectedError($this->exampleUrl,
-                'non_implemented_field', '', 'required');
+                'non_implemented_field', '', 'required',
+                $assertInvalidFailMsg);
 
         $this->checkValidationAssertionThrowsExpectedError('/nonexistent-url',
-                'username_field', '', 'required', $this->missingErrorKeyMsg);
+                'username_field', '', 'required',
+                $this->sessionMissingErrorKey);
     }
 
     #[Test]
@@ -153,11 +162,84 @@ class ValidationAssertionsTest extends TestCase {
                         . "method", $replace)
         );
     }
-    
+
     #[Test]
     public function get_request_method_can_be_used(): void {
         $this->assertValidationRuleIsImplementedInUrl($this->exampleUrl,
                 'user_id_field', 'not a number', 'numeric', 'get');
+    }
+
+    #[Test]
+    public function headers_can_also_be_send_as_part_of_the_assertions(): void {
+        $exampleUrl = $this->exampleUrl;
+        $exampleRoute = $this->exampleRouteName;
+        [$field, $invalidVal, $rule, $method] = ['field', '', 'required',
+            'put', ['example' => 'header']];
+        $exampleHeaders = ['example' => 'header'];
+
+        $this->assertValidationRuleIsImplementedInUrl($exampleUrl, $field,
+                $invalidVal, $rule, $method, headers: $exampleHeaders);
+
+        $this->assertValidationRuleIsImplementedInRouteName($exampleRoute,
+                $field, '', 'required', $method, headers: $exampleHeaders);
+
+        $list = [[$field, $invalidVal, $rule]];
+
+        $this->assertValidationRulesAreImplementedInUrl($exampleUrl, $list,
+                $method, headers: $exampleHeaders);
+
+        $this->assertValidationRulesAreImplementedInRouteName($exampleRoute,
+                $list, $method, headers: $exampleHeaders);
+
+        $this->checkValidationAssertionThrowsExpectedError($exampleUrl, $field,
+                'not a number', 'numeric', $this->sessionMissingErrorKey,
+                $method, $exampleHeaders);
+    }
+
+    #[Test]
+    public function json_type_request_methods_can_be_used(): void {
+        $this->assertValidationRuleIsImplementedInUrl($this->exampleUrl,
+                'json_field', 'not a number', 'numeric', 'optionsJson');
+    }
+
+    #[Test]
+    public function
+    argument_options_can_be_given_for_json_request_type_methods(): void {
+        $exampleUrl = $this->exampleUrl;
+        $exampleRoute = $this->exampleRouteName;
+        [$field, $value, $rule, $method, $options] = ['json_field',
+            '<not_a_number>', 'numeric', 'optionsJson', JSON_HEX_TAG];
+
+        $this->assertValidationRuleIsImplementedInUrl($exampleUrl, $field, 
+                $value, $rule, $method, options: $options);
+
+        $this->assertValidationRuleIsImplementedInRouteName($exampleRoute, 
+                $field, $value, $rule, $method, options: $options);
+
+        $list = [[$field, $value, $rule]];
+
+        $this->assertValidationRulesAreImplementedInUrl($exampleUrl, $list, 
+                $method, options: $options);
+        
+        $this->assertValidationRulesAreImplementedInRouteName($exampleRoute, 
+                $list, $method, options: $options);
+        
+        $errorMsg = __($this->responseMissingFieldKey, ['field' => $field]);
+        
+        $this->checkValidationAssertionThrowsExpectedError($exampleUrl, $field,
+                $value, $rule, $errorMsg, $method);
+    }
+    
+    #[Test]
+    public function argument_method_is_flexible(): void {
+        $this->assertValidationRuleIsImplementedInUrl($this->exampleUrl,
+                'user_id_field', 'not a number', 'numeric', 'DeLeTe');
+        
+        $this->assertValidationRuleIsImplementedInUrl($this->exampleUrl,
+                'json_field', 'not a number', 'numeric', 'optionsjson');
+        
+        $this->assertValidationRuleIsImplementedInUrl($this->exampleUrl,
+                'json_field', 'not a number', 'numeric', 'options_json');
     }
 
     #[Test]
@@ -229,13 +311,17 @@ class ValidationAssertionsTest extends TestCase {
         $this->checkValidationAssertionFailsFromTheExpectedListRow($list1,
                 keyOfRowExpectedToFailAssertion: 1);
 
+        $assertInvalidFailMsg = __($this->sessionMissingFieldKey,
+                ['field' => 'non_implemented_field']);
+
         $list2 = [
             ['username_field', '', 'required'],
             ['email_field', 'not an email', 'email'],
             ['non_implemented_field', '', 'required'],
         ];
 
-        $this->checkValidationAssertionFailsFromTheExpectedListRow($list2, 2);
+        $this->checkValidationAssertionFailsFromTheExpectedListRow($list2, 2,
+                $assertInvalidFailMsg);
     }
 
     #[Test]
@@ -295,32 +381,5 @@ class ValidationAssertionsTest extends TestCase {
             $this->checkInvalidRowShapeThrowsExpectedError(
                     $invalidRowShapeExample);
         }
-    }
-
-    #[Test]
-    public function headers_can_also_be_send_as_part_of_the_assertions(): void {
-        $exampleUrl = $this->exampleUrl;
-        $exampleRoute = $this->exampleRouteName;
-        [$field, $invalidVal, $rule, $method] = ['field', '', 'required',
-            'put', ['example' => 'header']];
-        $exampleHeaders = ['example' => 'header'];
-
-        $this->assertValidationRuleIsImplementedInUrl($exampleUrl, $field,
-                $invalidVal, $rule, $method, headers: $exampleHeaders);
-
-        $this->assertValidationRuleIsImplementedInRouteName($exampleRoute,
-                $field, '', 'required', $method, headers: $exampleHeaders);
-
-        $list = [[$field, $invalidVal, $rule]];
-
-        $this->assertValidationRulesAreImplementedInUrl($exampleUrl, $list,
-                $method, headers: $exampleHeaders);
-
-        $this->assertValidationRulesAreImplementedInRouteName($exampleRoute,
-                $list, $method, headers: $exampleHeaders);
-
-        $this->checkValidationAssertionThrowsExpectedError($exampleUrl, $field,
-                'not a number', 'numeric', $this->missingErrorKeyMsg, $method,
-                $exampleHeaders);
     }
 }

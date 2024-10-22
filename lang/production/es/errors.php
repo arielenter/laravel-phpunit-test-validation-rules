@@ -13,7 +13,7 @@ return [
     . 'Información enviada: :data' . "\n"
     . 'Regla por comprobar: :rule' . "\n"
     . 'Error esperado: :expected_validation_error' . "\n"
-    . 'assertSessionHasErrorsIn dice: :assert_session_has_errors_in_fail',
+    . 'assertInvalid dice: :assert_invalid_fail_msg',
     
     'with_headers' => ' con los encabezados siguientes ‘:headers’',
     

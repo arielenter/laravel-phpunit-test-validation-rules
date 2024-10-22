@@ -33,7 +33,8 @@ trait Assertions {
             string|Rule|array $validationRule,
             string $requestMethod = 'post',
             string $errorBag = 'default',
-            array $headers =[]
+            array $headers = [],
+            int $options = 0
     ): void {
         $validatedRequestMethod = UnsupportedRequestMethodException::
                 validateRequestMethod($requestMethod);
@@ -52,7 +53,7 @@ trait Assertions {
         trySubmitInvalidDataExampleToUrlAndAssertItReturnsExpectedErrMsg($this,
                 $url, $invalidDataExample, $fieldName, $fieldValidationRule,
                 $expectedErrorMessage, $validatedRequestMethod, $errorBag,
-                $headers);
+                $headers, $options);
     }
 
     public function assertValidationRuleIsImplementedInRouteName(
@@ -62,7 +63,8 @@ trait Assertions {
             string|Rule|array $validationRule,
             string $requestMethod = 'post',
             string $errorBag = 'default',
-            array $headers = []
+            array $headers = [],
+            int $options = 0
     ): void {
         $this->assertValidationRuleIsImplementedInUrl(
                 route($routeName),
@@ -71,7 +73,8 @@ trait Assertions {
                 $validationRule,
                 $requestMethod,
                 $errorBag,
-                $headers
+                $headers,
+                $options
         );
     }
 
@@ -99,8 +102,8 @@ trait Assertions {
             array $list,
             string $requestMethod = 'post',
             string $errorBag = 'default',
-            array $headers = []
-            
+            array $headers = [],
+            int $options = 0
     ): void {
         foreach ($list as $currentRowKey => $currentRow) {
             RowShouldHadBeenANestedArrayException::validateCurrentRowIsArray(
@@ -125,9 +128,9 @@ trait Assertions {
                         $fieldKey, $fieldName, $currentRowKey, $currentRow);
 
                 foreach ($invalidValueExamples as $invalidValueExample) {
-                    $this->assertValidationRuleIsImplementedInUrl($url, 
-                            $fieldName, $invalidValueExample, $validationRule, 
-                            $requestMethod, $errorBag, $headers);
+                    $this->assertValidationRuleIsImplementedInUrl($url,
+                            $fieldName, $invalidValueExample, $validationRule,
+                            $requestMethod, $errorBag, $headers, $options);
                 }
             }
         }
@@ -144,9 +147,10 @@ trait Assertions {
             array $list,
             string $requestMethod = 'post',
             string $errorBag = 'default',
-            array $headers = []
+            array $headers = [],
+            int $options = 0
     ): void {
-        $this->assertValidationRulesAreImplementedInUrl(
-                route($routeName), $list, $requestMethod, $errorBag, $headers);
+        $this->assertValidationRulesAreImplementedInUrl(route($routeName),
+                $list, $requestMethod, $errorBag, $headers, $options);
     }
 }
