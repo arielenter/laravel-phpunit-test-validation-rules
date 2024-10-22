@@ -69,17 +69,58 @@ puede ser traducida del ingles al español de la siguiente forma:',
     'assertions_code_in_a_nuteshell' => 'Código en breve',
     
     'function_used_to_get_validation_fail_error' => 
-'En palabras sencillas, la siguiente función es utilizada para obtener el 
-mensaje de validación fallida esperado.',
+'En palabras sencillas la manera en que estas afirmaciones fueron programadas 
+es que la siguiente función es utilizada para obtener el mensaje de validación 
+fallida esperado.',
     
     'testcase_request_method_and_assertion_used' => 
-'Una vez que se conoce el mensaje de validación fallida esperado, se comprueba 
+'Y una vez que se conoce el mensaje de validación fallida, se comprueba 
 que dicho mensaje es recibido de regreso al enviar los valores inválidos 
 proporcionados al URL dado. Para dicho propósito se utiliza alguno de los 
-metodos de petición preexistentes en la clase TestCase así como una afirmación 
-que igualmente ya existe:',
+métodos de petición preexistentes en la instancia TestCase así como una 
+afirmación que igualmente ya existe en dicha instancia:',
     
     'this_is_a_quick_example_code' => 
-'Lo siguiente es una versión abreviada del código que realiza las afirmaciones:'
+'Lo siguiente es una versión abreviada del código que realiza las 
+afirmaciones:',
     
+    'additional_information' => 'Información Adicional',
+    
+    'supported_methods_title' => 'Métodos de Petición TestCase Soportados',
+    
+    'supported_methods_paragraph_1' => 
+'Como se describió en los párrafos anteriores, los métodos de petición de 
+Phpunit TestCase son utilizados para realizar las afirmaciones, con este 
+propósito, puedes escoger alguno de los siguientes métodos enviando la cadena 
+que corresponda en el argumento ‘requestMethod’.',
+    
+    'supported_methods_paragraph_2' => 
+'El argumento ‘requestMethod’ es flexible, de manera que la cadena enviada 
+puede estar formateada en mayúsculas o minúsculas sin distinción, además, es 
+posible utilizar otras convenciones para nombrarlas (ejemplo ‘post-json’ en 
+lugar de ‘postJson’.',
+    
+    'about_get_request_method' => 
+'Acerca del método de petición TestCase ‘get’',
+    
+    'about_get_request_method_paragraph' => 
+'En caso de que te lo preguntases, si planeas usar el método ‘get’ o su 
+variante ‘getJson’ no sera necesario enviar los parámetros como parte del URL, 
+ya que las afirmaciones se encargaran de ello por sí mismas.',
+    
+    'additional_arguments_title' => 'Explicación de Argumentos Adicionales',
+    
+    'additional_arguments_explanation_paragraph_1' => 
+'Los métodos de petición Phpunit TestCase poseen la posibilidad de enviar 
+encabezados durante las pruebas, con este mismo propósito existe el argumento 
+‘headers’.',
+    
+    'additional_arguments_explanation_paragraph_2' => 
+'Para métodos Phpunit TestCase de tipo Json existe la posibilidad de establecer 
+opciones, con este propósito existe el argumento ‘options’, sin embargo, tenga 
+en cuenta que si el método de petición proporcionado en el argumento 
+‘requestMethod’ no es de tipo Json el argumento ‘options’ simplemente sera 
+ignorado.',
+    
+    'license' => 'Licencia'
 ];

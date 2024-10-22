@@ -115,7 +115,7 @@ class RoutesValidationTest extends TestCase {
                         ['username_field', 'same_regex_field'],
                         ['0invalid', 'inva..lid', 'invalid.', 'inv@lid'],
 /**
- *                      regex has to be nested inside an array bacause it 
+ *                      regex has to be nested inside an array because it 
  *                      contains a pipe | on it, otherwise it will be confuse 
  *                      as a composed string rule (example ‘numeric|max:100’)                      
 */
@@ -160,19 +160,20 @@ formatted:
 
 ## Assetions Code In A Nutshell
 
-In brief, the following function is used to get the fail validation message:
+A brief explanation on how this assertions were coded is that the following 
+function is used to get the expected fail validation message:
 
 ```php
 validator($data, $rule)->messages()->first();
 ```
 
-Once the fail validation error message is known, it is used to check if said 
-message is returned when submitting the invalid data to the given URL using an 
-already existent TestCase request function like the following and using one of 
-it’s also already existenting assertions:
+And once the expected fail validation error message is known, it’s then used 
+to check if said message is returned when submitting the invalid data to the 
+given URL using an already existent TestCase request function like the 
+following and using one of it’s also already existenting assertions:
 
 ```php
-$this->post($uri, $data)->assertSessionHasErrorsIn($errorBag, $keys);
+$this->post($uri, $data)->assertInvalid($errors, $errorBag);
 ```
 
 The following is a quick example code that shows in a nutshell how the 
@@ -208,7 +209,7 @@ class AssertionsCodeInANutshellTest extends TestCase {
         $fieldError = [$fieldName => $expectedErrorMsg];
 
         $this->$requestMethod($url, $fieldValue)
-                ->assertSessionHasErrorsIn($errorBag, $fieldError);
+                ->assertInvalid($fieldError, $errorBag);
     }
 
     public function test_assertions_code_in_a_nutshell(): void {
@@ -218,3 +219,49 @@ class AssertionsCodeInANutshellTest extends TestCase {
 }
 
 ```
+
+## Additional Information
+
+### Supported TestCase Request Methods
+
+As described in the paragraphs above, Phpunit’s TestCase request methods are 
+used to make the assertions, to this end, you can select which method you 
+desire to be used by sending the ‘requestMethod’ argument with one of the 
+following strings:
+
++ get
++ post
++ put
++ patch
++ delete
++ options
++ getJson
++ postJson
++ putJson
++ patchJson
++ deleteJson
++ optionsJson
+
+
+The ‘requestMethod’ argument is flexible, meaning it’s case insensitive and 
+other naming conventions could be used and it will work the same (example 
+‘post-json’ instead of ‘postJson’).
+
+### About TestCase ‘get’ Request Method
+
+In case you are wondering, if you were to use the ‘get’ method or it’s json 
+variant ‘getJson’, it won’t be necessary to include parameters on it’s URL, 
+this would be handle by the assertion on its own.
+
+### Additional Arguments Explanation
+
+Phpunit’s TestCase request methods have an optional argument ‘headers’, to 
+this end, an optional ‘header’ argument is also available.
+
+Phpunit’s TestCase Json type request methods have also an optional argument 
+‘options’, and for that specific reason ‘options’ is also available, thought it 
+will be ignore if the given method is not a json type.
+
+## License
+
+GNU General Public License (GPL) version 3

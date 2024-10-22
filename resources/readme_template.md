@@ -53,7 +53,7 @@ validator($data, $rule)->messages()->first();
 :testcase_request_method_and_assertion_used
 
 ```php
-$this->post($uri, $data)->assertSessionHasErrorsIn($errorBag, $keys);
+$this->post($uri, $data)->assertInvalid($errors, $errorBag);
 ```
 
 :this_is_a_quick_example_code
@@ -63,3 +63,27 @@ $this->post($uri, $data)->assertSessionHasErrorsIn($errorBag, $keys);
 ```php
 :code_file_content
 ```
+
+## :additional_information
+
+### :supported_methods_title
+
+:supported_methods_paragraph_1
+
+:supported_methods
+
+:supported_methods_paragraph_2
+
+### :about_get_request_method
+
+:about_get_request_method_paragraph
+
+### :additional_arguments_title
+
+:additional_arguments_explanation_paragraph_1
+
+:additional_arguments_explanation_paragraph_2
+
+## :license
+
+GNU General Public License (GPL) version 3

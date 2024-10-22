@@ -25,7 +25,7 @@ class AssertionsCodeInANutshellTest extends TestCase {
         $fieldError = [$fieldName => $expectedErrorMsg];
 
         $this->$requestMethod($url, $fieldValue)
-                ->assertSessionHasErrorsIn($errorBag, $fieldError);
+                ->assertInvalid($fieldError, $errorBag);
     }
 
     public function test_assertions_code_in_a_nutshell(): void {

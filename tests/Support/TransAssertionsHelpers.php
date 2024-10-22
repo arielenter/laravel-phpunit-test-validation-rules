@@ -23,8 +23,8 @@ trait TransAssertionsHelpers {
             string $transKey,
             ?string $locale = null
     ): array {
-        preg_match_all('/::|:(([a-z_]|)+)/i', __($transKey, locale: $locale),
-                $matches);
+        preg_match_all('/::|:([a-z][a-z_0-9]*)/i', 
+                __($transKey, locale: $locale), $matches);
 
         return array_filter($matches[1]);
     }

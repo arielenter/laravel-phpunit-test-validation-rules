@@ -65,16 +65,52 @@ formatted:',
     'assertions_code_in_a_nuteshell' => 'Assetions Code In A Nutshell',
     
     'function_used_to_get_validation_fail_error' => 
-'In brief, the following function is used to get the fail validation message:',
+'A brief explanation on how this assertions were coded is that the following 
+function is used to get the expected fail validation message:',
     
     'testcase_request_method_and_assertion_used' => 
-'Once the fail validation error message is known, it is used to check if said 
-message is returned when submitting the invalid data to the given URL using an 
-already existent TestCase request function like the following and using one of 
-it’s also already existenting assertions:',
+'And once the expected fail validation error message is known, it’s then used 
+to check if said message is returned when submitting the invalid data to the 
+given URL using an already existent TestCase request function like the 
+following and using one of it’s also already existenting assertions:',
     
     'this_is_a_quick_example_code' => 
 'The following is a quick example code that shows in a nutshell how the 
-assertions were made.'
+assertions were made.',
     
+    'additional_information' => 'Additional Information',
+    
+    'supported_methods_title' => 'Supported TestCase Request Methods',
+    
+    'supported_methods_paragraph_1' => 
+'As described in the paragraphs above, Phpunit’s TestCase request methods are 
+used to make the assertions, to this end, you can select which method you 
+desire to be used by sending the ‘requestMethod’ argument with one of the 
+following strings:',
+    
+    'supported_methods_paragraph_2' => 
+'The ‘requestMethod’ argument is flexible, meaning it’s case insensitive and 
+other naming conventions could be used and it will work the same (example 
+‘post-json’ instead of ‘postJson’).',
+    
+    
+    'about_get_request_method' => 'About TestCase ‘get’ Request Method',
+    
+    'about_get_request_method_paragraph' => 
+'In case you are wondering, if you were to use the ‘get’ method or it’s json 
+variant ‘getJson’, it won’t be necessary to include parameters on it’s URL, 
+this would be handle by the assertion on its own.',
+    
+    'additional_arguments_title' => 'Additional Arguments Explanation',
+    
+    'additional_arguments_explanation_paragraph_1' => 
+'Phpunit’s TestCase request methods have an optional argument ‘headers’, to 
+this end, an optional ‘header’ argument is also available.',
+    
+    'additional_arguments_explanation_paragraph_2' => 
+'Phpunit’s TestCase Json type request methods have also an optional argument 
+‘options’, and for that specific reason ‘options’ is also available, thought it 
+will be ignore if the given method is not a json type.',
+    
+    'license' => 'License'
 ];

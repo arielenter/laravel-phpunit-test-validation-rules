@@ -2,16 +2,19 @@
 
 namespace Arielenter\ValidationAssertions\Tests\Unit;
 
+use Arielenter\Validation\Constants\SupportedRequestMethods;
 use Arielenter\ValidationAssertions\Tests\Support\TransAssertions;
 use Arielenter\ValidationAssertions\Tests\TestCase;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
 use PHPUnit\Framework\Attributes\Test;
+use function json_encode;
 use function trans;
 
 class ReadmeTest extends TestCase {
 
-    use TransAssertions;
+    use TransAssertions,
+        SupportedRequestMethods;
 
     public string $transPrefix = 'arielenter_validation_assertions_test::';
 
@@ -47,6 +50,8 @@ class ReadmeTest extends TestCase {
                 locale: 'en');
         $replace = array_merge($readmeSnips, $readmeFiles);
 
+        $replace['supported_methods'] = $this->getSupportedMethodsList();
+
         $withoutComments = $this->tryGetTrans("{$prefix}files.readme_template",
                 $replace, 'en');
 
@@ -55,5 +60,13 @@ class ReadmeTest extends TestCase {
 
         return $this->tryGetTrans("readme.without_comments",
                         $this->tryGetTrans("{$prefix}comments"));
+    }
+    
+    public function getSupportedMethodsList() {
+        $methodsList = '';
+        foreach ($this::SUPPORTED_METHODS as $method) {
+            $methodsList .= "+ {$method}\n";
+        }
+        return $methodsList;
     }
 }
