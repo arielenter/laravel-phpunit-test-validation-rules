@@ -7,7 +7,7 @@ use ValueError;
 use function __;
 use function json_encode;
 
-class NotAnInvalidValueExampleForGivenRuleException extends ValueError {
+class InvalidDataExample extends ValueError {
     
     use TransPrefix;
 
@@ -26,7 +26,7 @@ class NotAnInvalidValueExampleForGivenRuleException extends ValueError {
         return parent::__construct($message);
     }
 
-    public static function validateExpectedErrorMessageIsNotEmpty(
+    public static function validate(
             string $expectedErrorMessage,
             array $invalidDataExample,
             array $fieldValidationRule,

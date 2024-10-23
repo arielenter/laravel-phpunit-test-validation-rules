@@ -7,7 +7,7 @@ use TypeError;
 use function __;
 use function json_encode;
 
-class RowShouldHadBeenANestedArrayException extends TypeError {
+class RowValueType extends TypeError {
 
     use TransPrefix;
 
@@ -24,7 +24,7 @@ class RowShouldHadBeenANestedArrayException extends TypeError {
         return parent::__construct($message);
     }
 
-    public static function validateCurrentRowIsArray(
+    public static function validate(
             mixed $currentRow,
             string|int $currentRowKey
     ) {

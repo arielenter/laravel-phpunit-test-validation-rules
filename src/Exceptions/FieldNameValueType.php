@@ -7,7 +7,7 @@ use TypeError;
 use function __;
 use function json_encode;
 
-class WrongFieldNameValueTypeException extends TypeError {
+class FieldNameValueType extends TypeError {
 
     use TransPrefix;
 
@@ -31,7 +31,7 @@ class WrongFieldNameValueTypeException extends TypeError {
         return parent::__construct($message);
     }
 
-    public static function validateFieldNameIsString(
+    public static function validate(
             string|int $fieldKey,
             mixed $fieldName,
             string|int $currentRowKey,

@@ -9,7 +9,7 @@ use TypeError;
 use function __;
 use function json_encode;
 
-class IncorrectRuleValueTypeException extends TypeError {
+class RuleValueType extends TypeError {
 
     use TransPrefix,
         SupportedRuleClasses;
@@ -33,7 +33,7 @@ class IncorrectRuleValueTypeException extends TypeError {
         return parent::__construct($message);
     }
 
-    public static function ifRuleIsArrayValidateCorrectTypeOfItsValues(
+    public static function ifArrayValidateItsValues(
             string|Rule|array $validationRule
     ): void {
         if (!is_array($validationRule)) {
@@ -63,11 +63,10 @@ class IncorrectRuleValueTypeException extends TypeError {
                             $correctTypesAndClasses);
         }
 
-        IncorrectObjectRuleException::validateRuleIsAnInstenseOfASupportedClass(
-                $ruleValue);
+        ObjectRule::validate($ruleValue);
     }
 
-    public static function validateKeyTwoValueType(
+    public static function validate(
             mixed $ruleValue, array $correctTypes
     ) {
         self::validateValidationRuleValueType($ruleValue, $ruleValue, 

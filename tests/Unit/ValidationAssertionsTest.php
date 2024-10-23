@@ -4,9 +4,9 @@ namespace Arielenter\ValidationAssertions\Tests\Unit;
 
 use Arielenter\Validation\Assertions as ValidationAssertions;
 use Arielenter\Validation\Constants\SupportedRequestMethods;
-use Arielenter\Validation\Exceptions\NotAnInvalidValueExampleForGivenRuleException;
-use Arielenter\Validation\Exceptions\UnknownRuleGivenException;
-use Arielenter\Validation\Exceptions\UnsupportedRequestMethodException;
+use Arielenter\Validation\Exceptions\InvalidDataExample;
+use Arielenter\Validation\Exceptions\RuleGiven;
+use Arielenter\Validation\Exceptions\RequestMethod;
 use Arielenter\ValidationAssertions\Tests\Support\TransAssertions;
 use Arielenter\ValidationAssertions\Tests\Support\ValidationAssertionsTestHelpers;
 use Arielenter\ValidationAssertions\Tests\TestCase;
@@ -138,7 +138,7 @@ class ValidationAssertionsTest extends TestCase {
         $this->assertThrows(
                 fn() => $this->assertValidationRuleIsImplementedInUrl($a1,
                         $a2, $a3, $a4),
-                NotAnInvalidValueExampleForGivenRuleException::class,
+                InvalidDataExample::class,
                 $this->tryGetTrans($this::TRANS_PREFIX . "not_invalid_data",
                         $replace)
         );
@@ -157,7 +157,7 @@ class ValidationAssertionsTest extends TestCase {
         $this->assertThrows(
                 fn() => $this->assertValidationRuleIsImplementedInUrl($a1,
                         $a2, $a3, $a4, $a5),
-                UnsupportedRequestMethodException::class,
+                RequestMethod::class,
                 $this->tryGetTrans($this::TRANS_PREFIX . "unsupported_request_"
                         . "method", $replace)
         );
@@ -256,7 +256,7 @@ class ValidationAssertionsTest extends TestCase {
         $this->assertThrows(
                 fn() => $this->assertValidationRuleIsImplementedInUrl($a1,
                         $a2, $a3, $a4),
-                UnknownRuleGivenException::class,
+                RuleGiven::class,
                 $this->tryGetTrans($this::TRANS_PREFIX . "unknown_rule_given",
                         $replace)
         );

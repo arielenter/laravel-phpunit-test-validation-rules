@@ -13,7 +13,7 @@ use PHPUnit\Framework\AssertionFailedError;
 use function __;
 use function json_encode;
 
-class AssertionFailedException extends AssertionFailedError {
+class Assertion extends AssertionFailedError {
 
     use TransPrefix;
 

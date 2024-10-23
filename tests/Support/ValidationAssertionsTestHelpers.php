@@ -3,11 +3,11 @@
 namespace Arielenter\ValidationAssertions\Tests\Support;
 
 use Arielenter\Validation\Constants\TransPrefix;
-use Arielenter\Validation\Exceptions\IncorrectObjectRuleException;
-use Arielenter\Validation\Exceptions\IncorrectRuleValueTypeException;
-use Arielenter\Validation\Exceptions\RowHasAMissingKeyException;
-use Arielenter\Validation\Exceptions\RowShouldHadBeenANestedArrayException;
-use Arielenter\Validation\Exceptions\WrongFieldNameValueTypeException;
+use Arielenter\Validation\Exceptions\ObjectRule;
+use Arielenter\Validation\Exceptions\RuleValueType;
+use Arielenter\Validation\Exceptions\RowHasRequiredKeys;
+use Arielenter\Validation\Exceptions\RowValueType;
+use Arielenter\Validation\Exceptions\FieldNameValueType;
 use Arielenter\ValidationAssertions\Tests\Support\TransAssertions;
 use Exception;
 use Illuminate\Contracts\Validation\Rule;
@@ -335,7 +335,7 @@ trait ValidationAssertionsTestHelpers {
 
         return [
             $listExample,
-            RowShouldHadBeenANestedArrayException::class,
+            RowValueType::class,
             $this->tryGetTrans($transKey, $replace)
         ];
     }
@@ -363,7 +363,7 @@ trait ValidationAssertionsTestHelpers {
 
         return [
             $listExample,
-            RowHasAMissingKeyException::class,
+            RowHasRequiredKeys::class,
             $this->tryGetTrans($transKey, $replace)
         ];
     }
@@ -416,7 +416,7 @@ trait ValidationAssertionsTestHelpers {
 
         return [
             $listExample,
-            WrongFieldNameValueTypeException::class,
+            FieldNameValueType::class,
             $this->tryGetTrans($transKey, $replace)
         ];
     }
@@ -427,7 +427,7 @@ trait ValidationAssertionsTestHelpers {
 
         return [
             $listExample,
-            IncorrectRuleValueTypeException::class,
+            RuleValueType::class,
             $this->getIncorrectRuleValueTypeError(
                     $invalidRuleValue,
                     $invalidRuleValue,
@@ -444,7 +444,7 @@ trait ValidationAssertionsTestHelpers {
 
         return [
             $listExample,
-            IncorrectObjectRuleException::class,
+            ObjectRule::class,
             $this->getIncorrectRuleInstanceError($invalidRuleValue)
         ];
     }

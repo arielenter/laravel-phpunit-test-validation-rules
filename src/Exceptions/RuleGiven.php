@@ -10,7 +10,7 @@ use function __;
 use function validator;
 use function json_encode;
 
-class UnknownRuleGivenException extends ValueError {
+class RuleGiven extends ValueError {
     
     use TransPrefix;
 
@@ -41,9 +41,8 @@ class UnknownRuleGivenException extends ValueError {
             throw new self($validationRule, $e->getMessage());
         }
 
-        NotAnInvalidValueExampleForGivenRuleException::
-        validateExpectedErrorMessageIsNotEmpty($expectedErrorMessage,
-                $invalidDataExample, $fieldValidationRule);
+        InvalidDataExample::validate($expectedErrorMessage, $invalidDataExample,
+                $fieldValidationRule);
 
         return $expectedErrorMessage;
     }

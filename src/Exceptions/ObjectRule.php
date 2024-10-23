@@ -7,7 +7,7 @@ use Arielenter\Validation\Constants\TransPrefix;
 use TypeError;
 use function __;
 
-class IncorrectObjectRuleException extends TypeError {
+class ObjectRule extends TypeError {
 
     use TransPrefix,
         SupportedRuleClasses;
@@ -27,7 +27,7 @@ class IncorrectObjectRuleException extends TypeError {
         return parent::__construct($message);
     }
 
-    public static function validateRuleIsAnInstenseOfASupportedClass(
+    public static function validate(
             object $ruleObject
     ) {
         foreach (self::SUPPORTED_RULE_CLASSES as $class) {

@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Arielenter\Validation;
 
-use Arielenter\Validation\Exceptions\AssertionFailedException;
-use Arielenter\Validation\Exceptions\IncorrectRuleValueTypeException;
-use Arielenter\Validation\Exceptions\RowHasAMissingKeyException;
-use Arielenter\Validation\Exceptions\RowShouldHadBeenANestedArrayException;
-use Arielenter\Validation\Exceptions\UnknownRuleGivenException;
-use Arielenter\Validation\Exceptions\UnsupportedRequestMethodException;
-use Arielenter\Validation\Exceptions\WrongFieldNameValueTypeException;
+use Arielenter\Validation\Exceptions\Assertion;
+use Arielenter\Validation\Exceptions\RuleValueType;
+use Arielenter\Validation\Exceptions\RowHasRequiredKeys;
+use Arielenter\Validation\Exceptions\RowValueType;
+use Arielenter\Validation\Exceptions\RuleGiven;
+use Arielenter\Validation\Exceptions\RequestMethod;
+use Arielenter\Validation\Exceptions\FieldNameValueType;
 use Illuminate\Contracts\Validation\Rule;
 use function route;
 
@@ -36,20 +36,17 @@ trait Assertions {
             array $headers = [],
             int $options = 0
     ): void {
-        $validatedRequestMethod = UnsupportedRequestMethodException::
-                validateRequestMethod($requestMethod);
+        $validatedRequestMethod = RequestMethod::validate($requestMethod);
 
-        IncorrectRuleValueTypeException::
-        ifRuleIsArrayValidateCorrectTypeOfItsValues($validationRule);
+        RuleValueType::ifArrayValidateItsValues($validationRule);
 
         $invalidDataExample = [$fieldName => $invalidValueExample];
         $fieldValidationRule = [$fieldName => $validationRule];
 
-        $expectedErrorMessage = UnknownRuleGivenException::
-                tryGetValidationErrorMessage($invalidDataExample,
-                        $fieldValidationRule, $validationRule);
+        $expectedErrorMessage = RuleGiven::tryGetValidationErrorMessage(
+                $invalidDataExample, $fieldValidationRule, $validationRule);
 
-        AssertionFailedException::
+        Assertion::
         trySubmitInvalidDataExampleToUrlAndAssertItReturnsExpectedErrMsg($this,
                 $url, $invalidDataExample, $fieldName, $fieldValidationRule,
                 $expectedErrorMessage, $validatedRequestMethod, $errorBag,
@@ -106,16 +103,12 @@ trait Assertions {
             int $options = 0
     ): void {
         foreach ($list as $currentRowKey => $currentRow) {
-            RowShouldHadBeenANestedArrayException::validateCurrentRowIsArray(
-                    $currentRow, $currentRowKey);
+            RowValueType::validate($currentRow, $currentRowKey);
 
-            RowHasAMissingKeyException::
-            validateCurrentRowHasIntKeysCeroOneAndTwo($currentRow,
-                    $currentRowKey);
+            RowHasRequiredKeys::validate($currentRow, $currentRowKey);
 
             $validationRule = $currentRow[2];
-            IncorrectRuleValueTypeException
-            ::validateKeyTwoValueType($validationRule, ['string', 'array']);
+            RuleValueType::validate($validationRule, ['string', 'array']);
 
             $fieldNames = (is_array($currentRow[0])) ? $currentRow[0] :
                     array($currentRow[0]);
@@ -124,8 +117,8 @@ trait Assertions {
                     $currentRow[1] : array($currentRow[1]);
 
             foreach ($fieldNames as $fieldKey => $fieldName) {
-                WrongFieldNameValueTypeException::validateFieldNameIsString(
-                        $fieldKey, $fieldName, $currentRowKey, $currentRow);
+                FieldNameValueType::validate($fieldKey, $fieldName, 
+                        $currentRowKey, $currentRow);
 
                 foreach ($invalidValueExamples as $invalidValueExample) {
                     $this->assertValidationRuleIsImplementedInUrl($url,

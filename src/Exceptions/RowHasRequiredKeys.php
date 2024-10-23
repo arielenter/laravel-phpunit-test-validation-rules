@@ -7,7 +7,7 @@ use Arielenter\Validation\Constants\TransPrefix;
 use function __;
 use function json_encode;
 
-class RowHasAMissingKeyException extends ArgumentCountError {
+class RowHasRequiredKeys extends ArgumentCountError {
 
     use TransPrefix;
 
@@ -28,7 +28,7 @@ class RowHasAMissingKeyException extends ArgumentCountError {
         return parent::__construct($message);
     }
 
-    public static function validateCurrentRowHasIntKeysCeroOneAndTwo(
+    public static function validate(
             mixed $currentRow,
             string|int $currentRowKey
     ) {

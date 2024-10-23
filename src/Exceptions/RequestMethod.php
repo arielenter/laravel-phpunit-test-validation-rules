@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 use ValueError;
 use function __;
 
-class UnsupportedRequestMethodException extends ValueError {
+class RequestMethod extends ValueError {
 
     use TransPrefix,
         SupportedRequestMethods;
@@ -25,7 +25,7 @@ class UnsupportedRequestMethodException extends ValueError {
         return parent::__construct($message);
     }
 
-    public static function validateRequestMethod(string $requestMethod)
+    public static function validate(string $requestMethod)
     : string {
         $method = Str::of($requestMethod)->camel()->lower()->replace('j', 'J')
                 ->toString() ;
