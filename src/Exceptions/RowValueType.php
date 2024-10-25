@@ -2,18 +2,19 @@
 
 namespace Arielenter\Validation\Exceptions;
 
-use Arielenter\Validation\Constants\TransPrefix;
+use Arielenter\Validation\Constants\AssertionsTrans;
 use TypeError;
 use function __;
 use function json_encode;
 
 class RowValueType extends TypeError {
 
-    use TransPrefix;
+    use AssertionsTrans;
 
     public function __construct(mixed $currentRow, string|int $currentRowKey) {
         $message = __(
-                $this::TRANS_PREFIX . 'row_should_had_been_a_nested_array',
+                $this::ASSERTIONS_ERRORS_TRANS . 'row_should_had_been_a_nested_'
+                . 'array',
                 [
                     'key' => $currentRowKey,
                     'value' => json_encode($currentRow),

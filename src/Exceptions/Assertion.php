@@ -2,7 +2,7 @@
 
 namespace Arielenter\Validation\Exceptions;
 
-use Arielenter\Validation\Constants\TransPrefix;
+use Arielenter\Validation\Constants\AssertionsTrans;
 use Illuminate\Foundation\Testing\TestCase;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
@@ -15,7 +15,7 @@ use function json_encode;
 
 class Assertion extends AssertionFailedError {
 
-    use TransPrefix;
+    use AssertionsTrans;
 
     public function __construct(
             string $url,
@@ -29,11 +29,11 @@ class Assertion extends AssertionFailedError {
     ) {
         $withHeaders = '';
         if (!empty($headers)) {
-            $withHeaders = __($this::TRANS_PREFIX . 'with_headers',
+            $withHeaders = __($this::ASSERTIONS_ERRORS_TRANS . 'with_headers',
                     ['headers' => json_encode($headers)]);
         }
         $message = __(
-                $this::TRANS_PREFIX . 'validation_assertion_failed',
+                $this::ASSERTIONS_ERRORS_TRANS . 'validation_assertion_failed',
                 [
                     'url' => $url,
                     'method' => $requestMethod,
@@ -64,11 +64,11 @@ class Assertion extends AssertionFailedError {
     ): void {
         try {
             if (in_array($requestMethod, ['get', 'getJson'])) {
-                $response = self::getMethod($testCase, $requestMethod, $url, 
-                        $invalidDataExample, $headers, $options);
+                $response = self::getMethod($testCase, $requestMethod, $url,
+                                $invalidDataExample, $headers, $options);
             } else {
-                $response = self::allOtherMethods($testCase, $requestMethod, 
-                        $url, $invalidDataExample, $headers, $options);
+                $response = self::allOtherMethods($testCase, $requestMethod,
+                                $url, $invalidDataExample, $headers, $options);
             }
             $response->assertInvalid([$fieldName => $expectedErrorMessage],
                     $errorBag);
@@ -105,8 +105,8 @@ class Assertion extends AssertionFailedError {
             int $options
     ): TestResponse {
         if (Str::endsWith($method, 'Json')) {
-            return $testCase->$method($url, $invalidDataExample, $headers, 
-                    $options);
+            return $testCase->$method($url, $invalidDataExample, $headers,
+                            $options);
         }
         return $testCase->$method($url, $invalidDataExample, $headers);
     }

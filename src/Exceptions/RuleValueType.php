@@ -3,7 +3,7 @@
 namespace Arielenter\Validation\Exceptions;
 
 use Arielenter\Validation\Constants\SupportedRuleClasses;
-use Arielenter\Validation\Constants\TransPrefix;
+use Arielenter\Validation\Constants\AssertionsTrans;
 use Illuminate\Contracts\Validation\Rule;
 use TypeError;
 use function __;
@@ -11,7 +11,7 @@ use function json_encode;
 
 class RuleValueType extends TypeError {
 
-    use TransPrefix,
+    use AssertionsTrans,
         SupportedRuleClasses;
 
     public function __construct(
@@ -21,7 +21,7 @@ class RuleValueType extends TypeError {
             array $correctTypesAndClasses
     ) {
         $message = __(
-                $this::TRANS_PREFIX . 'incorrect_rule_value_type',
+                $this::ASSERTIONS_ERRORS_TRANS . 'incorrect_rule_value_type',
                 [
                     'rule' => json_encode($validationRule),
                     'value' => json_encode($ruleValue),
@@ -69,7 +69,7 @@ class RuleValueType extends TypeError {
     public static function validate(
             mixed $ruleValue, array $correctTypes
     ) {
-        self::validateValidationRuleValueType($ruleValue, $ruleValue, 
+        self::validateValidationRuleValueType($ruleValue, $ruleValue,
                 $correctTypes);
     }
 }

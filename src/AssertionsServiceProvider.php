@@ -2,9 +2,11 @@
 
 namespace Arielenter\Validation;
 
+use Arielenter\Validation\Constants\AssertionsTrans;
 use Illuminate\Support\ServiceProvider;
 
 class AssertionsServiceProvider extends ServiceProvider {
+    use AssertionsTrans;
 
     public function boot() {
         $this->registerResources();
@@ -12,6 +14,6 @@ class AssertionsServiceProvider extends ServiceProvider {
 
     protected function registerResources() {
         $this->loadTranslationsFrom(__DIR__ . '/../lang/production',
-                'arielenter_validation_assertions');
+                $this::ASSERTIONS_TRANS);
     }
 }

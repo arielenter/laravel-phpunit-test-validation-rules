@@ -2,12 +2,12 @@
 
 namespace Arielenter\ValidationAssertions\Tests\Support;
 
-use Arielenter\Validation\Constants\TransPrefix;
+use Arielenter\Validation\Constants\AssertionsTrans;
+use Arielenter\Validation\Exceptions\FieldNameValueType;
 use Arielenter\Validation\Exceptions\ObjectRule;
-use Arielenter\Validation\Exceptions\RuleValueType;
 use Arielenter\Validation\Exceptions\RowHasRequiredKeys;
 use Arielenter\Validation\Exceptions\RowValueType;
-use Arielenter\Validation\Exceptions\FieldNameValueType;
+use Arielenter\Validation\Exceptions\RuleValueType;
 use Arielenter\ValidationAssertions\Tests\Support\TransAssertions;
 use Exception;
 use Illuminate\Contracts\Validation\Rule;
@@ -17,14 +17,13 @@ use Illuminate\Validation\Rules\Password;
 use PHPUnit\Framework\AssertionFailedError;
 use TypeError;
 use function __;
-use function dd;
 use function json_encode;
 use function validator;
 
-trait ValidationAssertionsTestHelpers {
+trait ValidationAssertionsTestHelp {
 
     use TransAssertions,
-        TransPrefix;
+        AssertionsTrans;
 
     public string $regexRule = 'regex:/^[a-z]([a-z0-9]|[a-z0-9]\.[a-z0-9])*$/i';
     public string $exampleUrl = '/example-url';
@@ -124,7 +123,7 @@ trait ValidationAssertionsTestHelpers {
                 $assertInvalidFailMsg, $requestMethod, $headers,
                 $errorBag);
 
-        $expectedError = $this->tryGetTrans($this::TRANS_PREFIX
+        $expectedError = $this->tryGetTrans($this::ASSERTIONS_ERRORS_TRANS
                 . "validation_assertion_failed", $transReplace);
 
         try {
@@ -178,8 +177,8 @@ trait ValidationAssertionsTestHelpers {
         if (empty($headers)) {
             return '';
         }
-        return $this->tryGetTrans($this::TRANS_PREFIX . 'with_headers',
-                        ['headers' => json_encode($headers)]);
+        return $this->tryGetTrans($this::ASSERTIONS_ERRORS_TRANS
+                        . 'with_headers', ['headers' => json_encode($headers)]);
     }
 
     public function throwNotExpectedErrorReceived(
@@ -225,7 +224,8 @@ trait ValidationAssertionsTestHelpers {
             mixed $invalidValueFromRule,
             string $correctTypes
     ) {
-        $transKey = $this::TRANS_PREFIX . "incorrect_rule_value_type";
+        $transKey = $this::ASSERTIONS_ERRORS_TRANS
+                . "incorrect_rule_value_type";
         $replace = [
             'rule' => json_encode($rule),
             'value' => json_encode($invalidValueFromRule),
@@ -255,7 +255,7 @@ trait ValidationAssertionsTestHelpers {
     public function getIncorrectRuleInstanceError(
             object $invalidComposedRuleValue
     ) {
-        $transKey = $this::TRANS_PREFIX . "incorrect_object_rule";
+        $transKey = $this::ASSERTIONS_ERRORS_TRANS . "incorrect_object_rule";
         $replace = [
             'rule' => get_class($invalidComposedRuleValue),
             'classes' => Rule::class
@@ -274,7 +274,7 @@ trait ValidationAssertionsTestHelpers {
         $replace = $this->getTransReplace($this->exampleUrl, $a2, $a3, $a4,
                 $assertInvalidFailMsg);
 
-        $expectedErrorMsg = $this->tryGetTrans($this::TRANS_PREFIX
+        $expectedErrorMsg = $this->tryGetTrans($this::ASSERTIONS_ERRORS_TRANS
                 . "validation_assertion_failed", $replace);
 
         $this->assertThrows(
@@ -324,8 +324,8 @@ trait ValidationAssertionsTestHelpers {
     public function invalidRowShapeExample1(): array {
         $listExample = ['this row', 'should had been', 'nested'];
 
-        $transKey = $this::TRANS_PREFIX . "row_should_had_been_a_nested_"
-                . "array";
+        $transKey = $this::ASSERTIONS_ERRORS_TRANS . "row_should_had_been_a_"
+                . "nested_array";
 
         $replace = [
             'key' => 0,
@@ -353,7 +353,7 @@ trait ValidationAssertionsTestHelpers {
     missingIntKeyRowExample(array $exampleRow, int $missingIntKey): array {
         $listExample = [$exampleRow];
 
-        $transKey = $this::TRANS_PREFIX . "row_has_a_missing_key";
+        $transKey = $this::ASSERTIONS_ERRORS_TRANS . "row_has_a_missing_key";
 
         $replace = $replace = [
             'row_key' => 0,
@@ -404,7 +404,8 @@ trait ValidationAssertionsTestHelpers {
         $row = $listExample[0];
         $fieldName = $listExample[0][0];
 
-        $transKey = $this::TRANS_PREFIX . "wrong_field_name_value_type";
+        $transKey = $this::ASSERTIONS_ERRORS_TRANS . "wrong_field_name_value_"
+                . "type";
 
         $replace = [
             'row_key' => 0,

@@ -2,21 +2,21 @@
 
 namespace Arielenter\Validation\Exceptions;
 
-use Arielenter\Validation\Constants\TransPrefix;
+use Arielenter\Validation\Constants\AssertionsTrans;
 use ValueError;
 use function __;
 use function json_encode;
 
 class InvalidDataExample extends ValueError {
-    
-    use TransPrefix;
+
+    use AssertionsTrans;
 
     public function __construct(
             array $invalidDataExample,
             array $fieldValidationRule
     ) {
         $message = __(
-                $this::TRANS_PREFIX . 'not_invalid_data',
+                $this::ASSERTIONS_ERRORS_TRANS . 'not_invalid_data',
                 [
                     'data' => json_encode($invalidDataExample),
                     'rule' => json_encode($fieldValidationRule)

@@ -2,7 +2,7 @@
 
 namespace Arielenter\Validation\Exceptions;
 
-use Arielenter\Validation\Constants\TransPrefix;
+use Arielenter\Validation\Constants\AssertionsTrans;
 use BadMethodCallException;
 use Illuminate\Contracts\Validation\Rule;
 use ValueError;
@@ -11,15 +11,15 @@ use function validator;
 use function json_encode;
 
 class RuleGiven extends ValueError {
-    
-    use TransPrefix;
+
+    use AssertionsTrans;
 
     public function __construct(
             string|array|Rule $validationRule,
             string $validatorError
     ) {
         $message = __(
-                $this::TRANS_PREFIX . 'unknown_rule_given',
+                $this::ASSERTIONS_ERRORS_TRANS . 'unknown_rule_given',
                 [
                     'rule' => json_encode($validationRule),
                     'validator_error' => $validatorError

@@ -3,19 +3,19 @@
 namespace Arielenter\Validation\Exceptions;
 
 use Arielenter\Validation\Constants\SupportedRequestMethods;
-use Arielenter\Validation\Constants\TransPrefix;
+use Arielenter\Validation\Constants\AssertionsTrans;
 use Illuminate\Support\Str;
 use ValueError;
 use function __;
 
 class RequestMethod extends ValueError {
 
-    use TransPrefix,
+    use AssertionsTrans,
         SupportedRequestMethods;
 
     public function __construct(string $requestMethod) {
         $message = __(
-                $this::TRANS_PREFIX . 'unsupported_request_method',
+                $this::ASSERTIONS_ERRORS_TRANS . 'unsupported_request_method',
                 [
                     'method' => $requestMethod,
                     'supported_methods' => json_encode($this::SUPPORTED_METHODS)
@@ -28,7 +28,7 @@ class RequestMethod extends ValueError {
     public static function validate(string $requestMethod)
     : string {
         $method = Str::of($requestMethod)->camel()->lower()->replace('j', 'J')
-                ->toString() ;
+                ->toString();
 
         if (in_array($method, self::SUPPORTED_METHODS)) {
             return $method;

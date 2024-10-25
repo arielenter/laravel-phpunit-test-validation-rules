@@ -2,14 +2,14 @@
 
 namespace Arielenter\Validation\Exceptions;
 
-use Arielenter\Validation\Constants\TransPrefix;
+use Arielenter\Validation\Constants\AssertionsTrans;
 use TypeError;
 use function __;
 use function json_encode;
 
 class FieldNameValueType extends TypeError {
 
-    use TransPrefix;
+    use AssertionsTrans;
 
     public function __construct(
             string|int $fieldKey,
@@ -18,7 +18,7 @@ class FieldNameValueType extends TypeError {
             array $currentRow
     ) {
         $message = __(
-                $this::TRANS_PREFIX . 'wrong_field_name_value_type',
+                $this::ASSERTIONS_ERRORS_TRANS . 'wrong_field_name_value_type',
                 [
                     'field_key' => $fieldKey,
                     'field_name' => json_encode($fieldName),

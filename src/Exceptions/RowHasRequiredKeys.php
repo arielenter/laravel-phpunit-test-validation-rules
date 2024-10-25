@@ -3,13 +3,13 @@
 namespace Arielenter\Validation\Exceptions;
 
 use ArgumentCountError;
-use Arielenter\Validation\Constants\TransPrefix;
+use Arielenter\Validation\Constants\AssertionsTrans;
 use function __;
 use function json_encode;
 
 class RowHasRequiredKeys extends ArgumentCountError {
 
-    use TransPrefix;
+    use AssertionsTrans;
 
     public function __construct(
             mixed $currentRow,
@@ -17,7 +17,7 @@ class RowHasRequiredKeys extends ArgumentCountError {
             int $key
     ) {
         $message = __(
-                $this::TRANS_PREFIX . 'row_has_a_missing_key',
+                $this::ASSERTIONS_ERRORS_TRANS . 'row_has_a_missing_key',
                 [
                     'row_key' => $currentRowKey,
                     'value' => json_encode($currentRow),

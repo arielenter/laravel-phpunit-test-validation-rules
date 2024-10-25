@@ -8,7 +8,7 @@ use Arielenter\Validation\Exceptions\InvalidDataExample;
 use Arielenter\Validation\Exceptions\RuleGiven;
 use Arielenter\Validation\Exceptions\RequestMethod;
 use Arielenter\ValidationAssertions\Tests\Support\TransAssertions;
-use Arielenter\ValidationAssertions\Tests\Support\ValidationAssertionsTestHelpers;
+use Arielenter\ValidationAssertions\Tests\Support\ValidationAssertionsTestHelp;
 use Arielenter\ValidationAssertions\Tests\TestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Session;
@@ -20,7 +20,7 @@ class ValidationAssertionsTest extends TestCase {
 
     use ValidationAssertions,
         TransAssertions,
-        ValidationAssertionsTestHelpers,
+        ValidationAssertionsTestHelp,
         SupportedRequestMethods;
 
     public string $sessionMissingErrorKey = "Session is missing expected key "
@@ -139,8 +139,8 @@ class ValidationAssertionsTest extends TestCase {
                 fn() => $this->assertValidationRuleIsImplementedInUrl($a1,
                         $a2, $a3, $a4),
                 InvalidDataExample::class,
-                $this->tryGetTrans($this::TRANS_PREFIX . "not_invalid_data",
-                        $replace)
+                $this->tryGetTrans($this::ASSERTIONS_ERRORS_TRANS
+                        . "not_invalid_data", $replace)
         );
     }
 
@@ -158,8 +158,8 @@ class ValidationAssertionsTest extends TestCase {
                 fn() => $this->assertValidationRuleIsImplementedInUrl($a1,
                         $a2, $a3, $a4, $a5),
                 RequestMethod::class,
-                $this->tryGetTrans($this::TRANS_PREFIX . "unsupported_request_"
-                        . "method", $replace)
+                $this->tryGetTrans($this::ASSERTIONS_ERRORS_TRANS
+                        . "unsupported_request_method", $replace)
         );
     }
 
@@ -210,34 +210,34 @@ class ValidationAssertionsTest extends TestCase {
         [$field, $value, $rule, $method, $options] = ['json_field',
             '<not_a_number>', 'numeric', 'optionsJson', JSON_HEX_TAG];
 
-        $this->assertValidationRuleIsImplementedInUrl($exampleUrl, $field, 
+        $this->assertValidationRuleIsImplementedInUrl($exampleUrl, $field,
                 $value, $rule, $method, options: $options);
 
-        $this->assertValidationRuleIsImplementedInRouteName($exampleRoute, 
+        $this->assertValidationRuleIsImplementedInRouteName($exampleRoute,
                 $field, $value, $rule, $method, options: $options);
 
         $list = [[$field, $value, $rule]];
 
-        $this->assertValidationRulesAreImplementedInUrl($exampleUrl, $list, 
+        $this->assertValidationRulesAreImplementedInUrl($exampleUrl, $list,
                 $method, options: $options);
-        
-        $this->assertValidationRulesAreImplementedInRouteName($exampleRoute, 
+
+        $this->assertValidationRulesAreImplementedInRouteName($exampleRoute,
                 $list, $method, options: $options);
-        
+
         $errorMsg = __($this->responseMissingFieldKey, ['field' => $field]);
-        
+
         $this->checkValidationAssertionThrowsExpectedError($exampleUrl, $field,
                 $value, $rule, $errorMsg, $method);
     }
-    
+
     #[Test]
     public function argument_method_is_flexible(): void {
         $this->assertValidationRuleIsImplementedInUrl($this->exampleUrl,
                 'user_id_field', 'not a number', 'numeric', 'DeLeTe');
-        
+
         $this->assertValidationRuleIsImplementedInUrl($this->exampleUrl,
                 'json_field', 'not a number', 'numeric', 'optionsjson');
-        
+
         $this->assertValidationRuleIsImplementedInUrl($this->exampleUrl,
                 'json_field', 'not a number', 'numeric', 'options_json');
     }
@@ -257,8 +257,8 @@ class ValidationAssertionsTest extends TestCase {
                 fn() => $this->assertValidationRuleIsImplementedInUrl($a1,
                         $a2, $a3, $a4),
                 RuleGiven::class,
-                $this->tryGetTrans($this::TRANS_PREFIX . "unknown_rule_given",
-                        $replace)
+                $this->tryGetTrans($this::ASSERTIONS_ERRORS_TRANS
+                        . "unknown_rule_given", $replace)
         );
     }
 

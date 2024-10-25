@@ -3,13 +3,13 @@
 namespace Arielenter\Validation\Exceptions;
 
 use Arielenter\Validation\Constants\SupportedRuleClasses;
-use Arielenter\Validation\Constants\TransPrefix;
+use Arielenter\Validation\Constants\AssertionsTrans;
 use TypeError;
 use function __;
 
 class ObjectRule extends TypeError {
 
-    use TransPrefix,
+    use AssertionsTrans,
         SupportedRuleClasses;
 
     public function __construct(
@@ -17,7 +17,7 @@ class ObjectRule extends TypeError {
             array $correctClasses
     ) {
         $message = __(
-                $this::TRANS_PREFIX . 'incorrect_object_rule',
+                $this::ASSERTIONS_ERRORS_TRANS . 'incorrect_object_rule',
                 [
                     'rule' => get_class($ruleObject),
                     'classes' => implode("|", $correctClasses)
