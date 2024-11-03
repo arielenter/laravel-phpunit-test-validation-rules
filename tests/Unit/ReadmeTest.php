@@ -8,7 +8,7 @@ use Arielenter\ValidationAssertions\Tests\TestCase;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
 use PHPUnit\Framework\Attributes\Test;
-use function json_encode;
+use function __;
 use function trans;
 
 class ReadmeTest extends TestCase {
@@ -46,14 +46,12 @@ class ReadmeTest extends TestCase {
         $prefix = $this->transPrefix;
 
         $readmeSnips = $this->tryGetTrans("{$prefix}readme");
-        $readmeFiles = $this->tryGetTrans("{$prefix}files.readme_replace",
-                locale: 'en');
+        $readmeFiles = $this->getReadmeFiles();
         $replace = array_merge($readmeSnips, $readmeFiles);
 
         $replace['supported_methods'] = $this->getSupportedMethodsList();
 
-        $withoutComments = $this->tryGetTrans("{$prefix}files.readme_template",
-                $replace, 'en');
+        $withoutComments = __($this->getReadmeTemplate(), $replace);
 
         trans()->addLines(["readme.without_comments" => $withoutComments],
                 App::getLocale());
@@ -61,12 +59,35 @@ class ReadmeTest extends TestCase {
         return $this->tryGetTrans("readme.without_comments",
                         $this->tryGetTrans("{$prefix}comments"));
     }
-    
+
     public function getSupportedMethodsList() {
         $methodsList = '';
         foreach ($this::SUPPORTED_METHODS as $method) {
             $methodsList .= "+ {$method}\n";
         }
         return $methodsList;
+    }
+
+    public function getReadmeTemplate() {
+        return $readmeTemplate = File::get('resources/readme_template.md');
+    }
+
+    public function getReadmeFiles() {
+        $filesPath = [
+            'routes' => 'routes/web.php',
+            'tests' => 'tests/Feature/RoutesValidationTest.php',
+            'code' => 'tests/Feature/AssertionsCodeInANutshellTest.php'
+        ];
+
+        $filesNameAndContent = [];
+
+        foreach ($filesPath as $key => $filePath) {
+            $filesNameAndContent[$key . '_file'] = basename($filePath);
+            $filesNameAndContent[$key . '_file_content'] = str_replace(
+                    'Arielenter\ValidationAssertions\\', '',
+                    File::get($filePath));
+        }
+
+        return $filesNameAndContent;
     }
 }
