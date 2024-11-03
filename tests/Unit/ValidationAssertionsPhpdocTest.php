@@ -12,7 +12,7 @@ class ValidationAssertionsPhpdocTest extends TestCase {
     use TransAssertions;
 
     #[Test]
-    public function assertValidationRulesAreImplementedInUrl_phpdoc(): void {
+    public function array_shape_phpdoc_its_stablished_by_its_en_trans(): void {
         $filePath = 'src/Assertions.php';
         $oldCode = File::get($filePath);
 
