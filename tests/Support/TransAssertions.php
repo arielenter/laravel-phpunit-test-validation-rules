@@ -24,7 +24,7 @@ trait TransAssertions {
             ?array $replace = [],
             ?string $locale = null
     ): string|array {
-        $this->assertTrue(trans()->has($transKey),
+        $this->assertTrue(trans()->has($transKey, fallback: false),
                 $this->getTransKeyMissingFailMsg($transKey, $locale));
 
         $trans = __($transKey, $replace, $locale);
