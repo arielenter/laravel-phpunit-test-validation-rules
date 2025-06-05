@@ -67,10 +67,13 @@ class ValidationAssertionsTest extends TestCase {
     }
 
     #[Test]
-    public function session_is_flush_after_every_assertion(): void {
+    public function session_lacks_errors_before_every_assertion(): void {
         $this->will_pass_if_validation_is_implemented_in_url();
 
-        $this->assertEmpty(Session::all());
+        $this->assertFalse(
+            Session::has('errors'),
+            'Failed to assert that Session lacks the "errors" key.'
+        );
     }
 
     #[Test]

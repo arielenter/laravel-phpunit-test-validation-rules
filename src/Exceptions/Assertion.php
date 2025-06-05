@@ -77,7 +77,7 @@ class Assertion extends AssertionFailedError {
                             $expectedErrorMessage, $requestMethod, $errorBag,
                             $headers, $e->getMessage());
         } finally {
-            Session::flush();
+            Session::forget('errors');
         }
     }
 
