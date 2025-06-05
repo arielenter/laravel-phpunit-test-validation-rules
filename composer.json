@@ -1,6 +1,6 @@
 {
     "name": "arielenter/laravel-phpunit-test-validation-rules",
-    "version": "1.3.16",
+    "version": "1.3.17",
     "dist": {
         "url": "https://github.com/arielenter/laravel-phpunit-test-validation-rules/archive/refs/tags/v1.3.16.tar.gz",
         "type": "tar"
